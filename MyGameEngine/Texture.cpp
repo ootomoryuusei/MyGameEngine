@@ -1,13 +1,10 @@
-#include <wincodec.h>
 #include "Texture.h"
 #include"Direct3D.h"
 #include <DirectXTex.h>
 
-// DirectXTexのライブラリをリンク
 using namespace DirectX;
-#pragma comment(lib, "DirectXTex.lib")
 
-Texture::Texture()
+Texture::Texture() : pSampler_(nullptr),pSRV_(nullptr)
 {
 }
 
@@ -27,6 +24,10 @@ HRESULT Texture::Load(std::string fileName)
 	std::wstring wstr(fileName.begin(), fileName.end()); //string ->wchar_t* の変換 LPCWSTR=const wchar_t*
 	hr = LoadFromWICFile(wstr.c_str(), WIC_FLAGS::WIC_FLAGS_NONE, &metadata, image);
 
+	if (FAILED(hr)) {
+		return S_FALSE;
+	}
+
 	D3D11_SAMPLER_DESC  SamDesc;
 	ZeroMemory(&SamDesc, sizeof(D3D11_SAMPLER_DESC));
 	SamDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
@@ -34,10 +35,10 @@ HRESULT Texture::Load(std::string fileName)
 	SamDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 	SamDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
 	Direct3D::pDevice->CreateSamplerState(&SamDesc, &pSampler_);
+
 	if (FAILED(hr)) {
 		return S_FALSE;
 	}
-	return hr;
 
 	//シェーダーリソースビュー
 
@@ -49,15 +50,12 @@ HRESULT Texture::Load(std::string fileName)
 
 	srv.Texture2D.MipLevels = 1;
 
-
-
 	hr = CreateShaderResourceView(Direct3D::pDevice,
-
 		image.GetImages(), image.GetImageCount(), metadata, &pSRV_);
 	if (FAILED(hr)) {
 		return S_FALSE;
 	}
-    return hr;
+   return hr;
 }
 
 void Texture::Release()

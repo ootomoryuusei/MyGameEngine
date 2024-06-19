@@ -3,6 +3,7 @@
 #include"Direct3D.h"
 #include"Quad.h"
 #include"Camera.h"
+#include"Dice.h"
 
 //エントリーポイント
 //API アプリケーションプログラミングインターフェース
@@ -64,6 +65,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 
 	Quad* quad = new Quad();
 
+	/*Dice* dice = new Dice();*/
+
 	//Direct3D初期化
 	HRESULT hr = Direct3D::Initialize(winW, winH, hWnd);
 	if (FAILED(hr)) {
@@ -73,6 +76,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 
 	Camera::Initialize({ 0, 3, -10, 0 }, { 0, 0, 0, 0 });
 	hr = quad->Initialize();
+	/*hr = dice->Initialize();*/
 	if (FAILED(hr)) {
 		MessageBox(nullptr, L"Quadの初期化に失敗しました", L"エラー", MB_OK);
 		return E_FAIL;
@@ -106,17 +110,21 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 			rot += 0.05;
 			static float factor = 0.0;
 			factor += 0.001;
-			float scale = 1.5 + sin(factor);
-			XMMATRIX smat = XMMatrixScaling(scale, scale, scale);
-			XMMATRIX rmat = XMMatrixRotationY(XMConvertToRadians(rot));
-			XMMATRIX tmat = XMMatrixTranslation(2.0 * sin(factor), 0, 0);
-			/*XMMATRIX mat = XMMatrixRotationY(XMConvertToRadians(45));*/
-			XMMATRIX mat = smat * rmat * tmat;
+			/*float scale = 1.5 + sin(factor);*/
+			float scale = 1.0f;
+			/*XMMATRIX smat = XMMatrixScaling(scale, scale, scale);*/
+			/*XMMATRIX rmat = XMMatrixRotationY(XMConvertToRadians(rot));*/
+			XMMATRIX rxmat = XMMatrixRotationX(XMConvertToRadians(rot));
+			/*XMMATRIX tmat = XMMatrixTranslation(2.0 * sin(factor), 0, 0);*/
+			XMMATRIX rymat = XMMatrixRotationY(XMConvertToRadians(45));
+			/*XMMATRIX mat = smat * rmat * rxmat * tmat;*/
+			XMMATRIX mat = rymat * rxmat;
 			/*XMMATRIX mat = XMMatrixTranslation(2.0 * cos(factor), 2.0 * sin(factor), 0);*/
 
 			//単位行列は、数字の１と同じ
 			//XMMATRIX mat = XMMatrixIdentity();//Identityは単位行列って意味
 			quad->Draw(mat);
+			/*dice->Draw(mat);*/
 
 			//描画処理
 			Direct3D::EndDraw();
@@ -124,6 +132,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 	}
 
 	SAFE_DELETE(quad);
+	/*SAFE_DELETE(dice);*/
 	Direct3D::Release();
 	return 0;
 }
