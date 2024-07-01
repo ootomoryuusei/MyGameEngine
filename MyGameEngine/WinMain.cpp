@@ -1,9 +1,10 @@
 //インクルード
 #include <Windows.h>
 #include"Direct3D.h"
-#include"Quad.h"
+//#include"Quad.h"
 #include"Camera.h"
-#include"Dice.h"
+//#include"Dice.h"
+#include"Sprite.h"
 
 //エントリーポイント
 //API アプリケーションプログラミングインターフェース
@@ -63,7 +64,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
  //ウィンドウを表示
 	ShowWindow(hWnd, nCmdShow);
 
-	Quad* quad = new Quad();
+	/*Quad* quad = new Quad();*/
+	std::string textureData("Assets\\dice.png");
+
+	Sprite* sprite = new Sprite();
 
 	/*Dice* dice = new Dice();*/
 
@@ -75,8 +79,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 	}
 
 	Camera::Initialize({ 0, 3, -10, 0 }, { 0, 0, 0, 0 });
-	hr = quad->Initialize();
+	/*hr = quad->Initialize();*/
 	/*hr = dice->Initialize();*/
+	hr = sprite->Load(textureData);
 	if (FAILED(hr)) {
 		MessageBox(nullptr, L"Quadの初期化に失敗しました", L"エラー", MB_OK);
 		return E_FAIL;
@@ -106,33 +111,38 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 
 			//ここに自前の描画処理を追加していく
 			//DirectX s * r * t
-			static float rot = 0;
-			rot += 0.05;
-			static float factor = 0.0;
-			factor += 0.001;
-			/*float scale = 1.5 + sin(factor);*/
-			float scale = 1.0f;
-			/*XMMATRIX smat = XMMatrixScaling(scale, scale, scale);*/
-			/*XMMATRIX rmat = XMMatrixRotationY(XMConvertToRadians(rot));*/
-			XMMATRIX rxmat = XMMatrixRotationX(XMConvertToRadians(rot));
-			/*XMMATRIX tmat = XMMatrixTranslation(2.0 * sin(factor), 0, 0);*/
-			XMMATRIX rymat = XMMatrixRotationY(XMConvertToRadians(45));
-			/*XMMATRIX mat = smat * rmat * rxmat * tmat;*/
-			XMMATRIX mat = rymat * rxmat;
-			/*XMMATRIX mat = XMMatrixTranslation(2.0 * cos(factor), 2.0 * sin(factor), 0);*/
+			//static float rot = 0;
+			//rot += 0.05;
+			//static float factor = 0.0;
+			//factor += 0.001;
+			///*float scale = 1.5 + sin(factor);*/
+			//float scale = 1.0f;
+			///*XMMATRIX smat = XMMatrixScaling(scale, scale, scale);*/
+			///*XMMATRIX rmat = XMMatrixRotationY(XMConvertToRadians(rot));*/
+			//XMMATRIX rxmat = XMMatrixRotationX(XMConvertToRadians(rot));
+			///*XMMATRIX tmat = XMMatrixTranslation(2.0 * sin(factor), 0, 0);*/
+			//XMMATRIX rymat = XMMatrixRotationY(XMConvertToRadians(45));
+			///*XMMATRIX mat = smat * rmat * rxmat * tmat;*/
+			//XMMATRIX mat = rymat * rxmat;
+			///*XMMATRIX mat = XMMatrixTranslation(2.0 * cos(factor), 2.0 * sin(factor), 0);*/
 
-			//単位行列は、数字の１と同じ
-			//XMMATRIX mat = XMMatrixIdentity();//Identityは単位行列って意味
-			quad->Draw(mat);
-			/*dice->Draw(mat);*/
+			////単位行列は、数字の１と同じ
+			////XMMATRIX mat = XMMatrixIdentity();//Identityは単位行列って意味
+			//quad->Draw(mat);
+			///*dice->Draw(mat);*/
+
+			/*XMMATRIX mat = XMMatrixIdentity();*/
+			XMMATRIX mat = XMMatrixScaling(1 / 2.0f, 1 / 2.0f,0.0f);
+			sprite->Draw(mat);
 
 			//描画処理
 			Direct3D::EndDraw();
 		}
 	}
 
-	SAFE_DELETE(quad);
+	/*SAFE_DELETE(quad);*/
 	/*SAFE_DELETE(dice);*/
+	SAFE_DELETE(sprite);
 	Direct3D::Release();
 	return 0;
 }

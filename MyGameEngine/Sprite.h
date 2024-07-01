@@ -2,7 +2,7 @@
 #include "Direct3D.h"
 #include <DirectXMath.h>
 #include"Texture.h"
-#include"vector"
+#include<vector>
 
 using std::vector;
 
@@ -37,7 +37,7 @@ private:
 public:
 	Sprite();
 	 ~Sprite();
-    HRESULT Initialize();
+    HRESULT Load(std::string _fileName);
 	void Draw(XMMATRIX& worldMatrix);
 	void Release();
 private:
@@ -50,7 +50,7 @@ private:
 
 	HRESULT CreateConstantBuffer();
 
-	HRESULT LoadTexture();
+	HRESULT LoadTexture(std::string _fileName);
 	//-------------DrawÇ©ÇÁåƒÇŒÇÍÇÈä÷êî-------------//
 	void PassDataToCB(DirectX::XMMATRIX& worldMatirx);
 	void SetBufferToPipeline();
