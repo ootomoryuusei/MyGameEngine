@@ -107,19 +107,22 @@ HRESULT Sprite::Load(std::string _fileName)
 	return S_OK;
 }
 
-void Sprite::Draw(XMMATRIX& worldMatrix)
+void Sprite::Draw(Transform& _transform)
 {
+	Direct3D::SetShader(SHADER_TYPE::SHADER_2D);
+	//ワールドマトリクスを計算
+	_transform.Calculation();
 	//コンスタントバッファに情報を渡す
-	PassDataToCB(worldMatrix);
+	PassDataToCB(_transform.GetWorldMatrix());
 	//頂点バッファ、インデックスバッファ、コンスタントバッファをパイプラインに入れる
 	SetBufferToPipeline();
 	//描画
-	Direct3D::pContext->DrawIndexed(6, 0, 0);
+	Direct3D::pContext->DrawIndexed(indexNum_, 0, 0);
 }
 
 void Sprite::Release()
 {
-	pTexture_->Release();
+	/*pTexture_->Release();*/
 	SAFE_DELETE(pTexture_);
 
 	SAFE_RELEASE(pConstantBuffer_);
@@ -227,7 +230,7 @@ HRESULT Sprite::LoadTexture(std::string _fileName)
 	return S_OK;
 }
 
-void Sprite::PassDataToCB(DirectX::XMMATRIX& worldMatrix)
+void Sprite::PassDataToCB(DirectX::XMMATRIX worldMatrix)
 {
 	CONSTANT_BUFFER cb;
 	D3D11_MAPPED_SUBRESOURCE pdata;

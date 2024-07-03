@@ -1,13 +1,14 @@
 #pragma once
 #include"Quad.h"
+#include"Transform.h"
 class Dice : public Quad
 {
-private:
 public:
-	Dice();
-	~Dice();
-	virtual HRESULT Initialize();
-	virtual void Draw(XMMATRIX& worldMatrix);
-	void Release();
+	Dice() :Quad() {};
+	~Dice() override;
+private:
+	void InitVertexData() override; //’¸“_î•ñ‚Ì€”õ
+    void InitIndexData() override;
+	//-------------Draw‚©‚çŒÄ‚Î‚ê‚éŠÖ”-------------//
 };
 

@@ -11,6 +11,12 @@
 #pragma comment(lib,"d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 
+enum SHADER_TYPE {
+	SHADER_2D,
+	SHADER_3D,
+	SHADER_MAX
+};
+
 namespace Direct3D
 {
 	extern ID3D11Device* pDevice;
@@ -19,8 +25,14 @@ namespace Direct3D
 	//初期化
 	HRESULT Initialize(int winW, int winH, HWND hWnd);
 
+	
+
 	//シェーダー準備
 	HRESULT InitShader();
+	void SetShader(SHADER_TYPE _type);
+
+	HRESULT InitShader3D();
+	HRESULT InitShader2D();
 
 	//描画開始
 	void BeginDraw();

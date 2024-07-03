@@ -42,11 +42,13 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
     outData.uv = uv;
     
     
-    float4 light = float4(1, 0.8, -0.3, 0); //光源ベクトルの逆ベクトル
+    float4 light = float4(1,1,-1,0); //光源ベクトルの逆ベクトル
     light = normalize(light); //単位ベクトル化
     //法線を回転
-    normal = mul(pos, matW);
+    normal = mul(normal, matW);
     normal = normalize(normal);
+    normal.w = 0;
+    light.w = 0;
     //outData.color = clamp(dot(normal, light),0,1);
     outData.cos_alpha = clamp(dot(normal, light),0,1);
 
@@ -67,10 +69,10 @@ float4 PS(VS_OUT inData) : SV_Target
     float4 Id = { 1.0, 1.0, 1.0, 1.0 };
     float4 Kd = g_texture.Sample(g_sampler, inData.uv);
     float cos_alpha = inData.cos_alpha;
-    float4 ambentSource = { 0.2, 0.2, 0.2, 1.0 }; //環境光の強さ
+    float4 ambentSource = { 0.3, 0.3, 0.3, 0.0 }; //環境光の強さ
     
     //float4 diffuse = g_texture.Sample(g_sampler, inData.uv) * inData.color;
     //float4 ambient = g_texture.Sample(g_sampler, inData.uv) * float4(0.2, 0.2, 0.2, 1);
     //return diffuse + ambient;
-    return Id * Kd * cos_alpha;
+    return Id * Kd * cos_alpha + Id* Kd* ambentSource;
 }
