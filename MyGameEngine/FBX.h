@@ -41,16 +41,16 @@ class FBX
 	int polygonCount_;	//ポリゴン数
 	int materialCount_; //マテリアルの個数
 
-	void InitVertex(fbxsdk::FbxMesh* _mesh);
-	void InitIndex(fbxsdk::FbxMesh* _mesh);
+	void InitVertex(fbxsdk::FbxMesh* mesh);
+	void InitIndex(fbxsdk::FbxMesh* mesh);
 	void InitConstantBuffer();
 	void InitMaterial(fbxsdk::FbxNode* pNode);
 
 	int indexNum_;
 public:
 	FBX();
-	HRESULT Load(std::string _fileName);
-	void    Draw(Transform& _transform);
+	HRESULT Load(std::string fileName);
+	void    Draw(Transform& transform);
 	void    Release();
 };
 
