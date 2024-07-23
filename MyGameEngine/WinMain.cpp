@@ -151,6 +151,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 			dice->Draw(dTrans);*/
 			/*quad->Draw(trans);*/
 			Transform ftrans;
+			ftrans.position_ = { 1.0,1.0,-2.0 };
 			fbx->Draw(ftrans);
 
 			//•`‰æˆ—
