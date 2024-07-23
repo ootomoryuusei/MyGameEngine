@@ -87,7 +87,7 @@ void Quad::Draw(Transform& _transform)
 	//ワールドマトリクスを計算
 	_transform.Calculation();
 	//コンスタントバッファに情報を渡す
-	PassDataToCB(_transform.GetWorldMatrix());
+	PassDataToCB(_transform);
 	//頂点バッファ、インデックスバッファ、コンスタントバッファをパイプラインに入れる
 	SetBufferToPipeline();
 	//描画
@@ -213,7 +213,7 @@ HRESULT Quad::CreateVertexBuffer()
 	HRESULT hr;
 	// 頂点データ用バッファの設定
 	D3D11_BUFFER_DESC bd_vertex;
-	bd_vertex.ByteWidth = sizeof(VERTEX3D) * vertexNum_;
+	bd_vertex.ByteWidth = sizeof(VERTEX) * vertexNum_;
 	bd_vertex.Usage = D3D11_USAGE_DEFAULT;
 	bd_vertex.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd_vertex.CPUAccessFlags = 0;
@@ -262,7 +262,7 @@ HRESULT Quad::CreateIndexBuffer()
 HRESULT Quad::CreateConstantBuffer()
 {
 	D3D11_BUFFER_DESC cb;
-	cb.ByteWidth = sizeof(CONSTANT_BUFFER3D);
+	cb.ByteWidth = sizeof(CONSTANT_BUFFER);
 	cb.Usage = D3D11_USAGE_DYNAMIC;
 	cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	cb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
@@ -296,12 +296,12 @@ HRESULT Quad::LoadTexture()
 	return S_OK;
 }
 
-void Quad::PassDataToCB(DirectX::XMMATRIX worldMatirx)
+void Quad::PassDataToCB(Transform& _transform)
 {
-	CONSTANT_BUFFER3D cb;
+	CONSTANT_BUFFER cb;
 	D3D11_MAPPED_SUBRESOURCE pdata;
-	cb.matWVP = XMMatrixTranspose(worldMatirx * Camera::GetViewMatrix() * Camera::GetProjectionMatrix()); //view*projをCameraからとってくる
-	cb.matW = XMMatrixTranspose(worldMatirx);
+	cb.matWVP = XMMatrixTranspose(_transform.GetWorldMatrix() * Camera::GetViewMatrix() * Camera::GetProjectionMatrix()); //view*projをCameraからとってくる
+	cb.matW = XMMatrixTranspose(_transform.GetNormalMatrix());
 	Direct3D::pContext->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのリソースアクセスを一時止める
 	memcpy_s(pdata.pData, pdata.RowPitch, (void*)(&cb), sizeof(cb));	// データを値を送る
 	Direct3D::pContext->Unmap(pConstantBuffer_, 0);	//再開
@@ -310,7 +310,7 @@ void Quad::PassDataToCB(DirectX::XMMATRIX worldMatirx)
 void Quad::SetBufferToPipeline()
 {
 	//頂点バッファ
-	UINT stride = sizeof(VERTEX3D);
+	UINT stride = sizeof(VERTEX);
 	UINT offset = 0;
 	Direct3D::pContext->IASetVertexBuffers(0, 1, &pVertexBuffer_, &stride, &offset);
 

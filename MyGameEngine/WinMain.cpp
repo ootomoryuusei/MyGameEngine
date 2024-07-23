@@ -3,9 +3,10 @@
 #include"Direct3D.h"
 //#include"Quad.h"
 #include"Camera.h"
-#include"Dice.h"
-#include"Sprite.h"
+//#include"Dice.h"
+//#include"Sprite.h"
 #include"Transform.h"
+#include"FBX.h"
 
 //エントリーポイント
 //API アプリケーションプログラミングインターフェース
@@ -66,11 +67,11 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 	ShowWindow(hWnd, nCmdShow);
 
 	/*Quad* quad = new Quad();*/
-	std::string textureData("Assets\\bgscreen.png");
+	/*std::string textureData("Assets\\bgscreen.png");
 
 	Sprite* sprite = new Sprite();
 
-	Dice* dice = new Dice();
+	Dice* dice = new Dice();*/
 
 	//Direct3D初期化
 	HRESULT hr = Direct3D::Initialize(winW, winH, hWnd);
@@ -81,8 +82,11 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 
 	Camera::Initialize({ 0, 3, -10, 0 }, { 0, 0, 0, 0 });
 	/*hr = quad->Initialize();*/
-	hr = dice->Initialize();
-	hr = sprite->Load(textureData);
+	/*hr = dice->Initialize();
+	hr = sprite->Load(textureData);*/
+	FBX* fbx = new FBX();
+	fbx->Load("Assets\\oden.fbx");
+
 	if (FAILED(hr)) {
 		MessageBox(nullptr, L"Quadの初期化に失敗しました", L"エラー", MB_OK);
 		return E_FAIL;
@@ -133,19 +137,21 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 			
 
 			/*XMMATRIX mat = XMMatrixIdentity();*/
-			Transform dTrans;
+			/*Transform dTrans;
 			Transform sTrans;
 			sTrans.position_ = { 0.0,0.0,0.0 };
-			/*sTrans.scale_ = { 0.5,0.5,0.0 };*/
+			sTrans.scale_ = { 0.5,0.5,0.0 };
 			static float rot = 0;
 			dTrans.rotate_.y = rot;
 			rot = rot + 0.1;
 			dTrans.scale_ = { 0.5,0.5,0.5 };
-			dTrans.position_ = { 0.0,0.0,0.0 };
+			dTrans.position_ = { 1.0,1.0,7.0 };*/
 			/*XMMATRIX mat = XMMatrixScaling(1 / 2.0f, 1 / 2.0f,0.0f);*/
-			sprite->Draw(sTrans);
-			dice->Draw(dTrans);
+			/*sprite->Draw(sTrans);
+			dice->Draw(dTrans);*/
 			/*quad->Draw(trans);*/
+			Transform ftrans;
+			fbx->Draw(ftrans);
 
 			//描画処理
 			Direct3D::EndDraw();
@@ -153,8 +159,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 	}
 
 	/*SAFE_DELETE(quad);*/
-	SAFE_DELETE(dice);
+	/*SAFE_DELETE(dice);*/
 	/*SAFE_DELETE(sprite);*/
+	SAFE_DELETE(fbx);
 	Direct3D::Release();
 	return 0;
 }

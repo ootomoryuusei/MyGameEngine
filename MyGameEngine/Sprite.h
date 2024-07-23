@@ -9,22 +9,21 @@ using std::vector;
 
 using namespace DirectX;
 
-//コンスタントバッファー
-
-struct CONSTANT_BUFFER
-{
-	XMMATRIX	matW;
-};
-
-//頂点情報
-struct VERTEX
-{
-	XMVECTOR position;
-	XMVECTOR uv;
-};
-
 class Sprite
 {
+	//コンスタントバッファー
+	struct CONSTANT_BUFFER
+	{
+		XMMATRIX	matW;
+	};
+
+	//頂点情報
+	struct VERTEX
+	{
+		XMVECTOR position;
+		XMVECTOR uv;
+	};
+
 private:
 	uint64_t vertexNum_; //頂点数
 	vector<VERTEX> vertices_; //頂点情報

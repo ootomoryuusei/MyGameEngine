@@ -9,25 +9,26 @@ using namespace DirectX;
 
 //コンスタントバッファー
 
-struct CONSTANT_BUFFER3D
-{
-	XMMATRIX	matWVP;
-	XMMATRIX	matW;
-};
-
-//頂点情報
-struct VERTEX3D
-{
-	XMVECTOR position;
-	XMVECTOR uv;
-	XMVECTOR normal; //ノーマル追加(法線ベクトル)
-};
 
 class Quad
 {
+	struct CONSTANT_BUFFER
+	{
+		XMMATRIX	matWVP;
+		XMMATRIX	matW;
+	};
+
+	//頂点情報
+	struct VERTEX
+	{
+		XMVECTOR position;
+		XMVECTOR uv;
+		XMVECTOR normal; //ノーマル追加(法線ベクトル)
+	};
+
 protected:
 	int vertexNum_; //頂点数
-	std::vector<VERTEX3D> vertices_; //頂点情報
+	std::vector<VERTEX> vertices_; //頂点情報
 	int indexNum_; //インデックス数
 	std::vector<int> indices_; //インデックス情報
 	ID3D11Buffer* pVertexBuffer_;	//頂点バッファ
@@ -49,7 +50,7 @@ private:
 	HRESULT CreateConstantBuffer();
 	HRESULT LoadTexture();
 	//-------------Drawから呼ばれる関数-------------//
-	void PassDataToCB(DirectX::XMMATRIX worldMatirx);
+	void PassDataToCB(Transform& _transform);
 	void SetBufferToPipeline();
 };
 
