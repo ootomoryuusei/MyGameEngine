@@ -80,7 +80,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 		return 0;
 	}
 
-	Camera::Initialize({ 0, 3, -10, 0 }, { 0, 0, 0, 0 });
+	Camera::Initialize({ 2, 3, -8, 0 }, { 0, 0, 0, 0 });
 	/*hr = quad->Initialize();*/
 	/*hr = dice->Initialize();
 	hr = sprite->Load(textureData);*/
@@ -152,6 +152,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 			/*quad->Draw(trans);*/
 			Transform ftrans;
 			ftrans.position_ = { 1.0,1.0,-2.0 };
+			static float rot;
+			ftrans.rotate_.y = rot;
+			rot = rot + 0.01;
 			fbx->Draw(ftrans);
 
 			//•`‰æˆ—
