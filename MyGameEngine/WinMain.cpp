@@ -85,7 +85,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 	/*hr = dice->Initialize();
 	hr = sprite->Load(textureData);*/
 	FBX* fbx = new FBX();
-	fbx->Load("Assets\\oden.fbx");
+	fbx->Load("Assets\\GreenBox.fbx");
 
 	if (FAILED(hr)) {
 		MessageBox(nullptr, L"Quad‚Ì‰Šú‰»‚É¸”s‚µ‚Ü‚µ‚½", L"ƒGƒ‰[", MB_OK);

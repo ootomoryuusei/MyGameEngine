@@ -16,6 +16,10 @@ cbuffer global
     float4x4 matWVP; // ワールド・ビュー・プロジェクションの合成行列
     
     float4x4 matW; //ワールド行列
+    
+    float4 diffuseColor;
+    
+    bool isTextured;
 };
 
 //───────────────────────────────────────
@@ -69,10 +73,18 @@ float4 PS(VS_OUT inData) : SV_Target
     float4 Id = { 1.0, 1.0, 1.0, 1.0 };
     float4 Kd = g_texture.Sample(g_sampler, inData.uv);
     float cos_alpha = inData.cos_alpha;
-    float4 ambentSource = { 0.8, 0.8, 0.8, 0.0 }; //環境光の強さ
+    float4 ambentSource = { 0.3, 0.3, 0.3, 0.0 }; //環境光の強さ
+    if (isTextured == false)
+    {
+        return Id * diffuseColor * cos_alpha + Id * diffuseColor * ambentSource;
+    }
+    else
+    {
+        return Id * Kd * cos_alpha + Id * Kd * ambentSource;
+    }
     
     //float4 diffuse = g_texture.Sample(g_sampler, inData.uv) * inData.color;
     //float4 ambient = g_texture.Sample(g_sampler, inData.uv) * float4(0.2, 0.2, 0.2, 1);
     //return diffuse + ambient;
-    return Id * Kd * cos_alpha + Id* Kd* ambentSource;
+   
 }

@@ -17,6 +17,8 @@ class FBX
 	{
 		XMMATRIX	matWVP;
 		XMMATRIX	matNormal;
+		XMFLOAT4 diffuseColor;
+		int isTextured;
 	};
 
 	//頂点情報
@@ -29,6 +31,7 @@ class FBX
 
 	struct MATERIAL {
 		Texture* pTexture_;
+		XMFLOAT4 diffuse;
 	};
 
 	ID3D11Buffer* pVertexBuffer_;	//頂点バッファ
