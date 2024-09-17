@@ -73,7 +73,7 @@ float4 PS(VS_OUT inData) : SV_Target
     float4 Id = { 1.0, 1.0, 1.0, 1.0 };
     float4 Kd = g_texture.Sample(g_sampler, inData.uv);
     float cos_alpha = inData.cos_alpha;
-    float4 ambentSource = { 0.3, 0.3, 0.3, 0.0 }; //ŠÂ‹«Œõ‚Ì‹­‚³
+    float4 ambentSource = { 0.8, 0.8, 0.8, 0.0 }; //ŠÂ‹«Œõ‚Ì‹­‚³
     if (isTextured == false)
     {
         return Id * diffuseColor * cos_alpha + Id * diffuseColor * ambentSource;

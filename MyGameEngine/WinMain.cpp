@@ -1,18 +1,20 @@
 //インクルード
 #include <Windows.h>
-#include"Direct3D.h"
-//#include"Quad.h"
-#include"Camera.h"
-//#include"Dice.h"
-//#include"Sprite.h"
-#include"Transform.h"
-#include"FBX.h"
+#include<cstdlib>
+#include"Engine//Direct3D.h"
+#include"Engine//Camera.h"
+#include"Engine//RootJob.h"
 
 //エントリーポイント
 //API アプリケーションプログラミングインターフェース
 //    ->何らかのアプリケーションの便利機能をまとめたもの
 //SDK ソフトウェアデベロップメントキット
 //    ->ソフトウェアを開発するキット（APIを含む）
+
+//リンカ
+#pragma comment(lib,"d3d11.lib")
+#pragma comment(lib,"winmm.lib")
+
 
 //定数宣言
 const wchar_t* WIN_CLASS_NAME = L"SampleGame"; //ウィンドウクラス名
@@ -23,6 +25,7 @@ const int WINDOW_HEIGHT = 600; //ウィンドウの高さ
 //プロトタイプ宣言
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
+//エントリーポイント
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nCmdShow)
 {
 	//ウィンドウクラス（設計図）を作成
@@ -66,12 +69,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
  //ウィンドウを表示
 	ShowWindow(hWnd, nCmdShow);
 
-	/*Quad* quad = new Quad();*/
-	/*std::string textureData("Assets\\bgscreen.png");
-
-	Sprite* sprite = new Sprite();
-
-	Dice* dice = new Dice();*/
+	RootJob* pRootjob = new RootJob();
 
 	//Direct3D初期化
 	HRESULT hr = Direct3D::Initialize(winW, winH, hWnd);
@@ -80,17 +78,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 		return 0;
 	}
 
-	Camera::Initialize({ 2, 3, -8, 0 }, { 0, 0, 0, 0 });
-	/*hr = quad->Initialize();*/
-	/*hr = dice->Initialize();
-	hr = sprite->Load(textureData);*/
-	FBX* fbx = new FBX();
-	fbx->Load("Assets\\GreenBox.fbx");
-
-	if (FAILED(hr)) {
-		MessageBox(nullptr, L"Quadの初期化に失敗しました", L"エラー", MB_OK);
-		return E_FAIL;
-	}
+	Camera::Initialize();
+	pRootjob->Initialize();
 
 	//メッセージループ（何か起きるのを待つ）
 	MSG msg;
@@ -108,64 +97,49 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 		//メッセージなし
 		else
 		{
+			timeBeginPeriod(1);
+			static DWORD startTime = timeGetTime();
+			DWORD nowTime = timeGetTime();
+			timeEndPeriod(1);
+
+			static DWORD lastUpdateTime = nowTime;
+			static DWORD countFps = 0;
+
+			if (nowTime - startTime >= 1000) {
+				std::wstring str;
+				wsprintf(str.data(), L"%u", countFps);
+				SetWindowTextW(hWnd, str.c_str());
+				countFps = 0;
+				startTime = nowTime;
+			}
+			if (nowTime - lastUpdateTime <= 1000.0f / 60.0f) {
+				continue;
+			}
+			lastUpdateTime = nowTime;
+
+			/*char str[16];*/
+			
+			/*wsprintf(str.data(), L"%u", nowTime -startTime);*/
+			countFps++;
+			
 			//カメラを更新
 			Camera::Update();
+
+			pRootjob->UpdateSub();
 
 			//ゲームの処理
 			Direct3D::BeginDraw();
 
-			//ここに自前の描画処理を追加していく
-			//DirectX s * r * t
-			//static float rot = 0;
-			//rot += 0.05;
-			//static float factor = 0.0;
-			//factor += 0.001;
-			///*float scale = 1.5 + sin(factor);*/
-			//float scale = 1.0f;
-			///*XMMATRIX smat = XMMatrixScaling(scale, scale, scale);*/
-			///*XMMATRIX rmat = XMMatrixRotationY(XMConvertToRadians(rot));*/
-			//XMMATRIX rxmat = XMMatrixRotationX(XMConvertToRadians(rot));
-			///*XMMATRIX tmat = XMMatrixTranslation(2.0 * sin(factor), 0, 0);*/
-			//XMMATRIX rymat = XMMatrixRotationY(XMConvertToRadians(45));
-			///*XMMATRIX mat = smat * rmat * rxmat * tmat;*/
-			//XMMATRIX mat = rymat * rxmat;
-			///*XMMATRIX mat = XMMatrixTranslation(2.0 * cos(factor), 2.0 * sin(factor), 0);*/
+			pRootjob->DrawSub();
 
-			////単位行列は、数字の１と同じ
-			////XMMATRIX mat = XMMatrixIdentity();//Identityは単位行列って意味
-			
-			
+			//ここにゲームの内容を書いていく
 
-			/*XMMATRIX mat = XMMatrixIdentity();*/
-			/*Transform dTrans;
-			Transform sTrans;
-			sTrans.position_ = { 0.0,0.0,0.0 };
-			sTrans.scale_ = { 0.5,0.5,0.0 };
-			static float rot = 0;
-			dTrans.rotate_.y = rot;
-			rot = rot + 0.1;
-			dTrans.scale_ = { 0.5,0.5,0.5 };
-			dTrans.position_ = { 1.0,1.0,7.0 };*/
-			/*XMMATRIX mat = XMMatrixScaling(1 / 2.0f, 1 / 2.0f,0.0f);*/
-			/*sprite->Draw(sTrans);
-			dice->Draw(dTrans);*/
-			/*quad->Draw(trans);*/
-			Transform ftrans;
-			ftrans.position_ = { 1.0,1.0,-2.0 };
-			static float rot;
-			ftrans.rotate_.y = rot;
-			rot = rot + 0.01;
-			fbx->Draw(ftrans);
-
-			//描画処理
+			//描画の終了処理
 			Direct3D::EndDraw();
 		}
 	}
 
-	/*SAFE_DELETE(quad);*/
-	/*SAFE_DELETE(dice);*/
-	/*SAFE_DELETE(sprite);*/
-	SAFE_DELETE(fbx);
+	pRootjob->ReleaseSub();
 	Direct3D::Release();
 	return 0;
 }
