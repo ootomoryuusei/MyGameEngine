@@ -19,6 +19,10 @@ enum SHADER_TYPE {
 
 namespace Direct3D
 {
+	//定数宣言
+	const int WINDOW_WIDTH = 800;  //ウィンドウの幅
+	const int WINDOW_HEIGHT = 600; //ウィンドウの高さ
+
 	extern ID3D11Device* pDevice;
 	extern ID3D11DeviceContext* pContext;
 

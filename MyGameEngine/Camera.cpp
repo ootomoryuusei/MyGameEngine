@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include"Controller.h"
 
 namespace Camera {
 	//•Ï”

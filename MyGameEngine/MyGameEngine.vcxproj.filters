@@ -39,9 +39,6 @@
     <ClCompile Include="Texture.cpp">
       <Filter>ソース ファイル\DirectXetc</Filter>
     </ClCompile>
-    <ClCompile Include="Dice.cpp">
-      <Filter>ソース ファイル\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="Quad.cpp">
       <Filter>ソース ファイル\Objects</Filter>
     </ClCompile>
@@ -49,6 +46,15 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="FBX.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>ソース ファイル\DirectXetc</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -65,9 +71,6 @@
     <ClInclude Include="Texture.h">
       <Filter>ソース ファイル\DirectXetc</Filter>
     </ClInclude>
-    <ClInclude Include="Dice.h">
-      <Filter>ソース ファイル\Objects</Filter>
-    </ClInclude>
     <ClInclude Include="Quad.h">
       <Filter>ソース ファイル\Objects</Filter>
     </ClInclude>
@@ -76,6 +79,18 @@
     </ClInclude>
     <ClInclude Include="FBX.h">
       <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>ソース ファイル\DirectXetc</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Controller.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -88,5 +103,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MapEditor.rc">
+      <Filter>リソース ファイル</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

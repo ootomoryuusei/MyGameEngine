@@ -24,6 +24,7 @@
     <ProjectGuid>{f57accaa-073b-4ed8-846d-61128f0a5b3d}</ProjectGuid>
     <RootNamespace>MyGameEngine</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>MapEditor</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -150,24 +151,29 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Dice.cpp" />
+    <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Direct3D.cpp" />
     <ClCompile Include="FBX.cpp" />
     <ClCompile Include="Quad.cpp" />
     <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="Stage.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="WinMain.cpp" />
+    <ClCompile Include="Input.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="Dice.h" />
+    <ClInclude Include="Controller.h" />
     <ClInclude Include="Direct3D.h" />
     <ClInclude Include="FBX.h" />
     <ClInclude Include="Quad.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="Stage.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="Input.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Simple2D.hlsl">
@@ -185,6 +191,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MapEditor.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

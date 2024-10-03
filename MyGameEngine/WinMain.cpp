@@ -1,12 +1,13 @@
 //インクルード
 #include <Windows.h>
 #include"Direct3D.h"
-//#include"Quad.h"
+#include"Input.h"
 #include"Camera.h"
-//#include"Dice.h"
-//#include"Sprite.h"
 #include"Transform.h"
 #include"FBX.h"
+#include"Stage.h"
+#include"Controller.h"
+#include"resource.h"
 
 //エントリーポイント
 //API アプリケーションプログラミングインターフェース
@@ -22,6 +23,7 @@ const int WINDOW_HEIGHT = 600; //ウィンドウの高さ
 
 //プロトタイプ宣言
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+BOOL CALLBACK DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp);
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -66,6 +68,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
  //ウィンドウを表示
 	ShowWindow(hWnd, nCmdShow);
 
+	HWND hDlg = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_DIALOG1),hWnd, (DLGPROC)DialogProc);
+
 	/*Quad* quad = new Quad();*/
 	/*std::string textureData("Assets\\bgscreen.png");
 
@@ -80,12 +84,16 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 		return 0;
 	}
 
-	Camera::Initialize({ 0, 3, -10, 0 }, { 0, 0, 0, 0 });
-	/*hr = quad->Initialize();*/
-	/*hr = dice->Initialize();
-	hr = sprite->Load(textureData);*/
-	FBX* fbx = new FBX();
-	fbx->Load("Assets\\oden.fbx");
+	//DirectInputの初期化
+	Input::Initialize(hWnd);
+
+	Camera::Initialize({ 0, 10, -10, 0 }, { 0, 0, 0, 0 });
+
+	Stage* pStage = new Stage();
+	pStage->Initialize();
+
+	Controller* pCon = new Controller();
+	pCon->Initialize();
 
 	if (FAILED(hr)) {
 		MessageBox(nullptr, L"Quadの初期化に失敗しました", L"エラー", MB_OK);
@@ -104,55 +112,35 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 			DispatchMessage(&msg);
 		}
 
-
 		//メッセージなし
 		else
 		{
-			//カメラを更新
+			//入力情報の更新
+			Input::Update();
+
+			//カメラの更新
 			Camera::Update();
+
+			pCon->Update();
+
+			pStage->Update();
+
 
 			//ゲームの処理
 			Direct3D::BeginDraw();
 
+			if (Input::IsKeyDown(DIK_ESCAPE)) {
+				static int cnt = 0;
+				cnt++;
+				if (cnt >= 3) {
+					PostQuitMessage(0);
+				}
+			}
+
+
+			pStage->Draw();
+
 			//ここに自前の描画処理を追加していく
-			//DirectX s * r * t
-			//static float rot = 0;
-			//rot += 0.05;
-			//static float factor = 0.0;
-			//factor += 0.001;
-			///*float scale = 1.5 + sin(factor);*/
-			//float scale = 1.0f;
-			///*XMMATRIX smat = XMMatrixScaling(scale, scale, scale);*/
-			///*XMMATRIX rmat = XMMatrixRotationY(XMConvertToRadians(rot));*/
-			//XMMATRIX rxmat = XMMatrixRotationX(XMConvertToRadians(rot));
-			///*XMMATRIX tmat = XMMatrixTranslation(2.0 * sin(factor), 0, 0);*/
-			//XMMATRIX rymat = XMMatrixRotationY(XMConvertToRadians(45));
-			///*XMMATRIX mat = smat * rmat * rxmat * tmat;*/
-			//XMMATRIX mat = rymat * rxmat;
-			///*XMMATRIX mat = XMMatrixTranslation(2.0 * cos(factor), 2.0 * sin(factor), 0);*/
-
-			////単位行列は、数字の１と同じ
-			////XMMATRIX mat = XMMatrixIdentity();//Identityは単位行列って意味
-			
-			
-
-			/*XMMATRIX mat = XMMatrixIdentity();*/
-			/*Transform dTrans;
-			Transform sTrans;
-			sTrans.position_ = { 0.0,0.0,0.0 };
-			sTrans.scale_ = { 0.5,0.5,0.0 };
-			static float rot = 0;
-			dTrans.rotate_.y = rot;
-			rot = rot + 0.1;
-			dTrans.scale_ = { 0.5,0.5,0.5 };
-			dTrans.position_ = { 1.0,1.0,7.0 };*/
-			/*XMMATRIX mat = XMMatrixScaling(1 / 2.0f, 1 / 2.0f,0.0f);*/
-			/*sprite->Draw(sTrans);
-			dice->Draw(dTrans);*/
-			/*quad->Draw(trans);*/
-			Transform ftrans;
-			ftrans.position_ = { 1.0,1.0,-2.0 };
-			fbx->Draw(ftrans);
 
 			//描画処理
 			Direct3D::EndDraw();
@@ -162,7 +150,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 	/*SAFE_DELETE(quad);*/
 	/*SAFE_DELETE(dice);*/
 	/*SAFE_DELETE(sprite);*/
-	SAFE_DELETE(fbx);
+	/*SAFE_DELETE(fbx);*/
+	SAFE_DELETE(pCon);
+	pStage->Release();
+	Input::Release();
 	Direct3D::Release();
 	return 0;
 }
@@ -176,6 +167,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_DESTROY:
 		PostQuitMessage(0);  //プログラム終了
 		return 0;
+	case WM_MOUSEMOVE:
+		Input::SetMousePosition(LOWORD(lParam), HIWORD(lParam));
+		return 0;
 	}
 	return DefWindowProc(hWnd, msg, wParam, lParam);
+}
+
+//ダイアログプロシージャ
+BOOL CALLBACK DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
+{
+	switch (msg)
+	{
+
+	}
+	return FALSE;
 }
