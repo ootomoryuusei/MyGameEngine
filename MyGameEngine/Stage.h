@@ -1,5 +1,8 @@
 #pragma once
 #include"FBX.h"
+
+const int BOXKINDS = 5;
+
 class Stage
 {
 public:
@@ -21,7 +24,15 @@ public:
     //開放
     void Release();
 private:
-    FBX* fbx;
-    int table[20][20];
+
+    //構造体 Classとの違いはアクセス指定子の有無
+    struct Data
+    {
+        int height;
+        int type;
+    };
+
+    FBX* fbx[BOXKINDS];
+    Data table[20][20];
 };
 

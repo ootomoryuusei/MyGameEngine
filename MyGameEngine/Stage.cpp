@@ -5,17 +5,16 @@
 
 
 Stage::Stage()
-	:fbx(nullptr)
 {
-	for (int x = 0; x < 20; x++) {
-		for (int z = 0; z < 20; z++) {
-			table[x][z] = 1;
-		}
+	for (int i = 0; i < BOXKINDS; i++) {
+		fbx[i] = nullptr;
 	}
 
-	table[0][0] = 5;
-	table[3][3] = 2;
-	table[10][1] = 3;
+	for (int x = 0; x < 20; x++) {
+		for (int z = 0; z < 20; z++) {
+			table[x][z] = {1,0};
+		}
+	}
 }
 
 Stage::~Stage()
@@ -24,8 +23,20 @@ Stage::~Stage()
 
 void Stage::Initialize()
 {
-	fbx = new FBX;
-	fbx->Load("Assets\\BoxBrick.fbx");
+	string fileName[] = {
+		"BoxDefault",
+		"BoxBrick",
+		"BoxGrass",
+		"BoxSand",
+		"BoxWater"
+	};
+
+	for (int i = 0; i < BOXKINDS; i++) {
+		fbx[i] = new FBX();
+		string path = "Assets\\" + fileName[i] + ".fbx";
+		fbx[i]->Load(path);
+	}
+	
 }
 
 void Stage::Update()
@@ -73,7 +84,7 @@ void Stage::Draw()
 		for (int z = 0; z < 20; z++) {
 			for (int x = 0; x < 20; x++) {
 				trans.position_ = { 1.0f * x,1.0f * y ,-1.0f * z };
-				fbx->Draw(trans);
+				fbx[0]->Draw(trans);
 			}
 		}
 	}
@@ -82,6 +93,8 @@ void Stage::Draw()
 
 void Stage::Release()
 {
-	SAFE_RELEASE(fbx);
-	SAFE_DELETE(fbx);
+	for (int i = 0; i < BOXKINDS; i++) {
+		SAFE_RELEASE(fbx[i]);
+		SAFE_DELETE(fbx[i]);
+	}
 }
