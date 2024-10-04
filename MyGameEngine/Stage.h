@@ -1,7 +1,9 @@
 #pragma once
 #include"FBX.h"
 
-const int BOXKINDS = 5;
+const int BOXTYPE = 5;
+const int BOX_Z = 10;
+const int BOX_X = 10;
 
 class Stage
 {
@@ -32,7 +34,7 @@ private:
         int type;
     };
 
-    FBX* fbx[BOXKINDS];
-    Data table[20][20];
+    FBX* fbx[BOXTYPE];
+    Data table[BOX_Z][BOX_X];
 };
 

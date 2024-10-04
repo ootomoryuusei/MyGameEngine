@@ -6,15 +6,20 @@
 
 Stage::Stage()
 {
-	for (int i = 0; i < BOXKINDS; i++) {
+	for (int i = 0; i < BOXTYPE; i++) {
 		fbx[i] = nullptr;
 	}
 
-	for (int x = 0; x < 20; x++) {
-		for (int z = 0; z < 20; z++) {
-			table[x][z] = {1,0};
+	for (int z = 0; z < BOX_Z; z++) {
+		for (int x = 0; x < BOX_X; x++) {
+			table[z][x] = { 1,0 };
 		}
 	}
+	table[0][0].height = 5;
+	table[0][1].height = 4;
+	table[0][2].height = 3;
+	table[3][3].type = 2;
+	table[9][1].height = 3;
 }
 
 Stage::~Stage()
@@ -31,7 +36,7 @@ void Stage::Initialize()
 		"BoxWater"
 	};
 
-	for (int i = 0; i < BOXKINDS; i++) {
+	for (int i = 0; i < BOXTYPE; i++) {
 		fbx[i] = new FBX();
 		string path = "Assets\\" + fileName[i] + ".fbx";
 		fbx[i]->Load(path);
@@ -80,20 +85,22 @@ void Stage::Update()
 void Stage::Draw()
 {
 	Transform trans;
-	for (int y = 0; y < 3; y++) {
-		for (int z = 0; z < 20; z++) {
-			for (int x = 0; x < 20; x++) {
-				trans.position_ = { 1.0f * x,1.0f * y ,-1.0f * z };
-				fbx[0]->Draw(trans);
+	
+		for (int z = 0; z < BOX_Z; z++) {
+			for (int x = 0; x < BOX_X; x++) {
+				for (int y = 0; y < table[z][x].height; y++) {
+					trans.position_ = { 1.0f * x,1.0f * y ,-1.0f * z };
+					int type = table[z][x].type;
+					fbx[type]->Draw(trans);
+				}
 			}
 		}
-	}
 	
 }
 
 void Stage::Release()
 {
-	for (int i = 0; i < BOXKINDS; i++) {
+	for (int i = 0; i < BOXTYPE; i++) {
 		SAFE_RELEASE(fbx[i]);
 		SAFE_DELETE(fbx[i]);
 	}
