@@ -23,6 +23,16 @@ public:
 	void DrawSub();
 	void ReleaseSub();
 
+	void KillMe();
+
+	void SetPosition(XMFLOAT3 position) {
+		transform_.position_ = position;
+	}
+
+	void SetPosition(float x, float y, float z) {
+		SetPosition(XMFLOAT3(x, y, z));
+	}
+
 	//template <typename T> ‚Æ“¯‚¶
 	template <class T>
 	T* Instantiate(GameObject* pParent) {
@@ -34,5 +44,6 @@ public:
 		return pTmp;
 	}
 private:
+	bool isDead_;
 };
 

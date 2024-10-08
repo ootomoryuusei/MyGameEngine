@@ -1,8 +1,8 @@
 #include "Transform.h"
 
 Transform::Transform()
-    :position_({ 0,0,0 }), rotate_({ 0,0,0 }), scale_({ 1, 1, 1 })
-     ,matTranslate_(XMMatrixIdentity()),matRotate_(XMMatrixIdentity()),matScale_(XMMatrixIdentity())
+    : position_({0,0,0}), rotate_({0,0,0}), scale_({1, 1, 1})
+     ,matTranslate_(XMMatrixIdentity()),matRotate_(XMMatrixIdentity()),matScale_(XMMatrixIdentity()),pParent_(nullptr)
 {
 }
 
@@ -25,7 +25,13 @@ void Transform::Calculation()
 
 XMMATRIX Transform::GetWorldMatrix()
 {
-    return matScale_ * matRotate_ * matTranslate_; //SRT‚ğ‹‚ß‚é
+    if (pParent_ != nullptr) {
+        return matScale_ * matRotate_ * matTranslate_ * pParent_->GetWorldMatrix(); //SRT‚ğ‹‚ß‚é
+    }
+    else {
+        return matScale_ * matRotate_ * matTranslate_; //SRT‚ğ‹‚ß‚é
+    }
+   
 }
 
 XMMATRIX Transform::GetNormalMatrix()
