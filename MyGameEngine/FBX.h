@@ -11,6 +11,14 @@
 #pragma comment(lib, "LibXml2-MD.lib")
 #pragma comment(lib, "zlib-MD.lib")
 
+struct RayCastData
+{
+	XMFLOAT4 start;
+	XMFLOAT4 dir;
+	bool hit;
+	float dist;
+};
+
 class FBX
 {
 	struct CONSTANT_BUFFER
@@ -30,6 +38,9 @@ class FBX
 	struct MATERIAL {
 		Texture* pTexture_;
 	};
+
+	std::vector<VERTEX> vertices;
+	std::vector<int>* index;
 
 	ID3D11Buffer* pVertexBuffer_;	//頂点バッファ
 	ID3D11Buffer** pIndexBuffer_;
@@ -52,5 +63,7 @@ public:
 	HRESULT Load(std::string fileName);
 	void    Draw(Transform& transform);
 	void    Release();
+
+	void RayCast(RayCastData& rayData);
 };
 
