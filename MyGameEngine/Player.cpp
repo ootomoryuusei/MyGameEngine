@@ -1,6 +1,7 @@
 #include "Player.h"
 #include"Engine//FBX.h"
 #include"ChildOden.h"
+#include"Engine/Input.h"
 
 Player::Player(GameObject* parent):GameObject(parent,"Player"),pOden(nullptr)
 {
@@ -24,10 +25,24 @@ void Player::Initialize()
 
 void Player::Update()
 {
+	if (Input::IsKey(DIK_A)) {
+		transform_.position_.x -= 0.1;
+	}
+	if (Input::IsKey(DIK_D)) {
+		transform_.position_.x += 0.1;
+	}
+
+	if (Input::IsKeyDown(DIK_SPACE)) {
+	   Instantiate<ChildOden>(this);
+	}
 	transform_.rotate_.y += 0.1;
 	if (transform_.rotate_.y > 60 * 1) {
 		KillMe();
 	}
+
+	/*if (transform_.position_.z > 50) {
+		KillMe();
+	}*/
 }
 
 void Player::Draw()

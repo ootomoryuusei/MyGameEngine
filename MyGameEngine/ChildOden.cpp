@@ -1,5 +1,6 @@
 #include "ChildOden.h"
 #include"Engine//FBX.h"
+#include"Engine/Input.h"
 
 ChildOden::ChildOden(GameObject* parent)
 	:GameObject(parent,"ChildOden")
@@ -21,6 +22,7 @@ void ChildOden::Initialize()
 
 void ChildOden::Update()
 {
+	transform_.position_.z += 0.1;
 	transform_.rotate_.y += 0.1;
 }
 

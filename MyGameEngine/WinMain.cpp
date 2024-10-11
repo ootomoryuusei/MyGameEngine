@@ -4,6 +4,7 @@
 #include"Engine//Direct3D.h"
 #include"Engine//Camera.h"
 #include"Engine//RootJob.h"
+#include"Engine//Input.h"
 
 //エントリーポイント
 //API アプリケーションプログラミングインターフェース
@@ -78,6 +79,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 		return 0;
 	}
 
+	//DirectInputの初期化
+	Input::Initialize(hWnd);
 	Camera::Initialize();
 	pRootjob->Initialize();
 
@@ -122,6 +125,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 			/*wsprintf(str.data(), L"%u", nowTime -startTime);*/
 			countFps++;
 			
+			//入力情報の更新
+			Input::Update();
+
 			//カメラを更新
 			Camera::Update();
 
