@@ -79,6 +79,18 @@ void Stage::Update()
 
 		mouseFrontPos = XMVector3TransformCoord(mouseFrontPos, invVP * invProj*invView);
 		mouseBackPos = XMVector3TransformCoord(mouseBackPos, invView * invProj * invView);
+		
+		RayCastData data;
+		//レイの発射位置（マウス位置参照）
+		XMStoreFloat4(&data.start, mouseFrontPos);
+		XMStoreFloat4(&data.dir, mouseBackPos - mouseFrontPos);
+
+		Transform trans;
+		fbx[0]->RayCast(data, trans);
+
+		if (data.hit) {
+			PostQuitMessage(0);
+		}
 	}
 }
 
