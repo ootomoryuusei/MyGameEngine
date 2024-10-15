@@ -1,9 +1,9 @@
 #include "Player.h"
-#include"Engine//FBX.h"
 #include"ChildOden.h"
 #include"Engine/Input.h"
+#include"Model.h"
 
-Player::Player(GameObject* parent):GameObject(parent,"Player"),pOden(nullptr)
+Player::Player(GameObject* parent):GameObject(parent,"Player"),hModel(-1)
 {
 }
 
@@ -13,8 +13,7 @@ Player::~Player()
 
 void Player::Initialize()
 {
-	pOden = new FBX();
-	pOden->Load("Assets//Oden.fbx");
+	hModel = Model::Load("Assets//Oden.fbx");
 	transform_.scale_ = { 1.3,1.3,1.3 };
 
 	GameObject *pCo1 = Instantiate<ChildOden>(this);
@@ -47,11 +46,10 @@ void Player::Update()
 
 void Player::Draw()
 {
-	pOden->Draw(transform_);
+	Model::SetTransform(hModel, transform_);
+	Model::Draw(hModel);
 }
 
 void Player::Release()
 {
-	pOden->Release();
-	delete pOden;
 }

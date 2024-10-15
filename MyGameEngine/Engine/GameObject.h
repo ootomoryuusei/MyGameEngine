@@ -33,6 +33,11 @@ public:
 		SetPosition(XMFLOAT3(x, y, z));
 	}
 
+	void SetScale(float sx, float sy, float sz) { transform_.scale_ = { sx,sy,sz }; }
+	void SetRotateX(float xrotate) { transform_.rotate_.x = xrotate; }
+	void SetRotateY(float yrotate) { transform_.rotate_.y = yrotate; }
+	void SetRotateZ(float zrotate) { transform_.rotate_.z = zrotate; }
+
 	//template <typename T> ‚Æ“¯‚¶
 	template <class T>
 	T* Instantiate(GameObject* pParent) {

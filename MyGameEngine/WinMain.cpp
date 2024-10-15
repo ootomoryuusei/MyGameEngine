@@ -5,6 +5,7 @@
 #include"Engine//Camera.h"
 #include"Engine//RootJob.h"
 #include"Engine//Input.h"
+#include"Model.h"
 
 //エントリーポイント
 //API アプリケーションプログラミングインターフェース
@@ -145,7 +146,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 		}
 	}
 
+	Model::Release();  
 	pRootjob->ReleaseSub();
+	Input::Release();
 	Direct3D::Release();
 	return 0;
 }

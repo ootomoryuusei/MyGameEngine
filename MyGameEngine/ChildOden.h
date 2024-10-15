@@ -1,8 +1,6 @@
 #pragma once
 #include "Engine//GameObject.h"
 
-class FBX;
-
 class ChildOden :
     public GameObject
 {
@@ -15,6 +13,6 @@ public:
 	void Draw() override;
 	void Release() override;
 private:
-	FBX* pOden;
+	int hModel;
 };
 
