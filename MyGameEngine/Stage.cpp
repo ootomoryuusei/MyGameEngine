@@ -41,11 +41,6 @@ void Stage::Initialize()
 
 void Stage::Update()
 {
-	RayCastData data;
-	data.start = XMFLOAT4(-5, 5, 0, 0);
-	data.dir = XMFLOAT4(0, -1, 0, 0);
-	fbx[0]->RayCast(data);
-
 	if (Input::IsMouseButtonDown(0)) {
 		XMMATRIX matView = Camera::GetViewMatrix();
 		XMMATRIX matProj = Camera::GetProjectionMatrix();
