@@ -11,6 +11,14 @@
 #pragma comment(lib, "LibXml2-MD.lib")
 #pragma comment(lib, "zlib-MD.lib")
 
+struct RayCastData
+{
+	XMFLOAT4 start;
+	XMFLOAT4 dir;
+	bool hit;
+	float dist;
+};
+
 class FBX
 {
 	struct CONSTANT_BUFFER
@@ -47,10 +55,18 @@ class FBX
 	void InitMaterial(fbxsdk::FbxNode* pNode);
 
 	int indexNum_;
+
+	std::vector<VERTEX> vertices;
+
+	std::vector<int>* index;
 public:
 	FBX();
 	HRESULT Load(std::string fileName);
 	void    Draw(Transform& transform);
 	void    Release();
+
+	void RayCast(RayCastData& rayData, Transform& transform);
+
+	
 };
 
