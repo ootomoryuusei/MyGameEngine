@@ -25,6 +25,8 @@ public:
 
     //開放
     void Release();
+
+    BOOL CALLBACK DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp);
 private:
 
     //構造体 Classとの違いはアクセス指定子の有無

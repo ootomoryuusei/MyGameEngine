@@ -21,6 +21,8 @@ const wchar_t* APP_NAME = L"サンプルゲーム"; //アプリケーション名
 const int WINDOW_WIDTH = 800;  //ウィンドウの幅
 const int WINDOW_HEIGHT = 600; //ウィンドウの高さ
 
+Stage* pStage = new Stage();
+
 //プロトタイプ宣言
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 BOOL CALLBACK DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp);
@@ -89,7 +91,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 
 	Camera::Initialize({ 0, 10, -10, 0 }, { 0, 0, 0, 0 });
 
-	Stage* pStage = new Stage();
+	
 	pStage->Initialize();
 
 	Controller* pCon = new Controller();
@@ -175,11 +177,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 }
 
 //ダイアログプロシージャ
-BOOL CALLBACK DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
-{
-	switch (msg)
-	{
-
-	}
-	return FALSE;
+BOOL CALLBACK DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp) {
+	return pStage->DialogProc(hDlg, msg, wp, lp);
 }

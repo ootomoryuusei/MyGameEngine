@@ -2,6 +2,7 @@
 #include"Transform.h"
 #include"Input.h"
 #include"Camera.h"
+#include"resource.h"
 
 
 Stage::Stage()
@@ -16,6 +17,7 @@ Stage::Stage()
 		}
 	}
 	table[0][0].height = 5;
+	table[0][0].type = 3;
 	table[0][1].height = 4;
 	table[0][2].height = 3;
 	table[3][3].type = 2;
@@ -62,7 +64,7 @@ void Stage::Update()
 			w,0,0,0,
 			0,-h,0,0,
 			0,0,1,0,
-			w,0,0,1
+			w,h,0,1
 		};
 		XMMATRIX invView = XMMatrixInverse(nullptr, matView);
 		XMMATRIX invProj = XMMatrixInverse(nullptr, matProj);
@@ -78,19 +80,29 @@ void Stage::Update()
 		XMVECTOR mouseBackPos = XMLoadFloat3(&mousePos);
 
 		mouseFrontPos = XMVector3TransformCoord(mouseFrontPos, invVP * invProj*invView);
-		mouseBackPos = XMVector3TransformCoord(mouseBackPos, invView * invProj * invView);
+		mouseBackPos = XMVector3TransformCoord(mouseBackPos, invVP * invProj * invView);
 		
 		RayCastData data;
 		//レイの発射位置（マウス位置参照）
 		XMStoreFloat4(&data.start, mouseFrontPos);
 		XMStoreFloat4(&data.dir, mouseBackPos - mouseFrontPos);
+		
 
-		Transform trans;
-		fbx[0]->RayCast(data, trans);
-
-		if (data.hit) {
-			PostQuitMessage(0);
+		for (int z = 0; z < BOX_Z; z++) {
+			for (int x = 0; x < BOX_X; x++) {
+				for (int y = 0; y < table[z][x].height; y++) {
+					Transform trans;
+					trans.position_ = { 1.0f * x,1.0f * y ,-1.0f * z };
+					int type = table[z][x].type;
+					fbx[type]->RayCast(data, trans);
+					if (data.hit == true) {
+						table[z][x].height++;
+						return;
+					}
+				}
+			}
 		}
+
 	}
 }
 
@@ -116,4 +128,15 @@ void Stage::Release()
 		SAFE_RELEASE(fbx[i]);
 		SAFE_DELETE(fbx[i]);
 	}
+}
+
+//ダイアログプロシージャ
+BOOL CALLBACK DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
+{
+	switch (msg)
+	{
+	case WM_COMMAND:
+
+	}
+	return FALSE;
 }
