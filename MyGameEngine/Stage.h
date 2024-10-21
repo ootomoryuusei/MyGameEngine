@@ -26,9 +26,8 @@ public:
     //開放
     void Release();
 
-    BOOL CALLBACK DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp);
+    BOOL DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp);
 private:
-
     //構造体 Classとの違いはアクセス指定子の有無
     struct Data
     {
@@ -38,5 +37,8 @@ private:
 
     FBX* fbx[BOXTYPE];
     Data table[BOX_Z][BOX_X];
+
+    int selectMode = 0;
+    int selectType = 0;
 };
 

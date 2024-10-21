@@ -8,6 +8,9 @@
 #define IDC_RADIO_CHANGE                1014
 #define IDC_COMBO3                      1016
 #define IDC_EDIT1                       1017
+#define ID_MENU_NEW                     40001
+#define ID_MENU_OPEN                    40002
+#define ID_MENU_SAVE                    40003
 
 // Next default values for new objects
 // 

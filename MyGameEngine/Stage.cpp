@@ -16,12 +16,12 @@ Stage::Stage()
 			table[z][x] = { 1,0 };
 		}
 	}
-	table[0][0].height = 5;
+	/*table[0][0].height = 5;
 	table[0][0].type = 3;
 	table[0][1].height = 4;
 	table[0][2].height = 3;
 	table[3][3].type = 2;
-	table[9][1].height = 3;
+	table[9][1].height = 3;*/
 }
 
 Stage::~Stage()
@@ -96,7 +96,15 @@ void Stage::Update()
 					int type = table[z][x].type;
 					fbx[type]->RayCast(data, trans);
 					if (data.hit == true) {
-						table[z][x].height++;
+						if (selectMode == 0) {
+							table[z][x].height++;
+						}
+						else if (selectMode == 1 && table[z][x].height > 1) {
+							table[z][x].height--;
+						}
+						else if (selectMode == 2) {
+							table[z][x].type = selectType;
+						}
 						return;
 					}
 				}
@@ -130,13 +138,49 @@ void Stage::Release()
 	}
 }
 
+
+
 //ダイアログプロシージャ
-BOOL CALLBACK DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
+BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
 {
 	switch (msg)
 	{
-	case WM_COMMAND:
+	case WM_INITDIALOG:
+		SendMessage(GetDlgItem(hDlg, IDC_RADIO_UP), BM_SETCHECK, BST_CHECKED, 0);
 
+		SendMessage(GetDlgItem(hDlg, IDC_COMBO3), CB_ADDSTRING, 0, (LPARAM)L"デフォルト");
+		SendMessage(GetDlgItem(hDlg, IDC_COMBO3), CB_ADDSTRING, 0, (LPARAM)L"レンガ");
+		SendMessage(GetDlgItem(hDlg, IDC_COMBO3), CB_ADDSTRING, 0, (LPARAM)L"草");
+		SendMessage(GetDlgItem(hDlg, IDC_COMBO3), CB_ADDSTRING, 0, (LPARAM)L"砂");
+		SendMessage(GetDlgItem(hDlg, IDC_COMBO3), CB_ADDSTRING, 0, (LPARAM)L"水");
+		break;
+	case WM_COMMAND:
+		switch (LOWORD(wp))
+		{
+		case IDC_RADIO_UP:
+			selectMode = 0;
+			break;
+		case IDC_RADIO_DOWN:
+			selectMode = 1;
+			break;
+		case IDC_RADIO_CHANGE:
+			selectMode = 2;
+			break;
+		case IDC_COMBO3:
+			selectType = SendMessage(GetDlgItem(hDlg, IDC_COMBO3), CB_GETCURSEL, 0, 0);
+			break;
+		case ID_MENU_NEW:
+			break;
+		case ID_MENU_OPEN:
+
+			break;
+		case ID_MENU_SAVE:
+			break;
+		default:
+			break;
+		}
+		break;
 	}
+
 	return FALSE;
 }
