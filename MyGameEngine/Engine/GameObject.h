@@ -38,6 +38,10 @@ public:
 	void SetRotateY(float yrotate) { transform_.rotate_.y = yrotate; }
 	void SetRotateZ(float zrotate) { transform_.rotate_.z = zrotate; }
 
+	GameObject* FindChildObject(std::string _objName);
+	GameObject* GetRootJob();
+	GameObject* FindObject(std::string _objName);
+
 	//template <typename T> ‚Æ“¯‚¶
 	template <class T>
 	T* Instantiate(GameObject* pParent) {

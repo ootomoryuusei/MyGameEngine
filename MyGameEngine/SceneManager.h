@@ -9,6 +9,10 @@ enum SCENE_ID {
 class SceneManager :
     public GameObject
 {
+private:
+	SCENE_ID currentSceneID_;
+	SCENE_ID nextSceneID_;
+
 public:
 	//コンストラクタ
 	SceneManager(GameObject* parent);
@@ -16,6 +20,9 @@ public:
 	//デストラクタH
 	~SceneManager();
 
+	void ChangeScene(SCENE_ID nextScene) {
+		nextSceneID_ = nextScene;
+	}
 	//初期化
 	void Initialize() override;
 

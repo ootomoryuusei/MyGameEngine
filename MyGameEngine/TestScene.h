@@ -1,7 +1,6 @@
 #pragma once
-#include "Engine//GameObject.h"
-class TestScene :
-    public GameObject
+#include"Engine/GameObject.h"
+class TestScene : public GameObject
 {
 public:
 	//コンストラクタ

@@ -24,6 +24,8 @@ const wchar_t* APP_NAME = L"サンプルゲーム"; //アプリケーション名
 const int WINDOW_WIDTH = 800;  //ウィンドウの幅
 const int WINDOW_HEIGHT = 600; //ウィンドウの高さ
 
+RootJob* pRootjob;
+
 //プロトタイプ宣言
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -71,7 +73,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
  //ウィンドウを表示
 	ShowWindow(hWnd, nCmdShow);
 
-	RootJob* pRootjob = new RootJob();
+    
 
 	//Direct3D初期化
 	HRESULT hr = Direct3D::Initialize(winW, winH, hWnd);
@@ -83,6 +85,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 	//DirectInputの初期化
 	Input::Initialize(hWnd);
 	Camera::Initialize();
+	pRootjob = new RootJob(nullptr);
 	pRootjob->Initialize();
 
 	//メッセージループ（何か起きるのを待つ）
