@@ -33,6 +33,10 @@ public:
 		SetPosition(XMFLOAT3(x, y, z));
 	}
 
+	XMFLOAT3 GetPosition() {
+		return transform_.position_;
+	}
+
 	void SetScale(float sx, float sy, float sz) { transform_.scale_ = { sx,sy,sz }; }
 	void SetRotateX(float xrotate) { transform_.rotate_.x = xrotate; }
 	void SetRotateY(float yrotate) { transform_.rotate_.y = yrotate; }
