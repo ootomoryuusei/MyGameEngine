@@ -35,11 +35,6 @@ public:
 	//‰ð•ú
 	void Release() override;
 
-	void ChangeScene(SCENE_ID nextScene) {
-		nextSceneID_ = nextScene;
-	}
 private:
-	SCENE_ID currentSceneID_;
-	SCENE_ID nextSceneID_;
 };
 
