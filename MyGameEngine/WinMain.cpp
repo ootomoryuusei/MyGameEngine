@@ -24,7 +24,7 @@ const wchar_t* APP_NAME = L"サンプルゲーム"; //アプリケーション名
 const int WINDOW_WIDTH = 800;  //ウィンドウの幅
 const int WINDOW_HEIGHT = 600; //ウィンドウの高さ
 
-RootJob* pRootjob;
+RootJob* pRootjob = nullptr;
 
 //プロトタイプ宣言
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
