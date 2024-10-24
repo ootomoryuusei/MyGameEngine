@@ -16,12 +16,6 @@ Stage::Stage()
 			table[z][x] = { 1,0 };
 		}
 	}
-	/*table[0][0].height = 5;
-	table[0][0].type = 3;
-	table[0][1].height = 4;
-	table[0][2].height = 3;
-	table[3][3].type = 2;
-	table[9][1].height = 3;*/
 }
 
 Stage::~Stage()
@@ -138,6 +132,115 @@ void Stage::Release()
 	}
 }
 
+void Stage::Save()
+{
+	//windowsにあらかじめ準備されているダイアログー＞コモンダイアログ
+	WCHAR fileName[MAX_PATH] = L"無題.map";  //ファイル名を入れる変数
+
+	//「ファイルを保存」ダイアログの設定
+	OPENFILENAME ofn;                         	//名前をつけて保存ダイアログの設定用構造体
+	ZeroMemory(&ofn, sizeof(ofn));            	//構造体初期化
+	ofn.lStructSize = sizeof(OPENFILENAME);   	//構造体のサイズ
+	ofn.lpstrFilter = TEXT("マップデータ(*.map)\0*.map\0")        //─┬ファイルの種類
+		              TEXT("テキストデータ(*.txt)\0*.txt\0")      //-|
+		              TEXT("すべてのファイル(*.*)\0*.*\0\0");     //─┘
+	ofn.lpstrFile = fileName;               	//ファイル名
+	ofn.nMaxFile = MAX_PATH;               	//パスの最大文字数
+	ofn.Flags = OFN_OVERWRITEPROMPT;   		//フラグ（同名ファイルが存在したら上書き確認）
+	ofn.lpstrDefExt = L"map";                  	//デフォルト拡張子
+
+	//「ファイルを保存」ダイアログ
+	BOOL selFile;
+	selFile = GetSaveFileName(&ofn);
+
+	//キャンセルしたら中断
+	if (selFile == FALSE) return;
+	//ファイル作成/開く
+	HANDLE hFile;        //ファイルのハンドル
+	hFile = CreateFile(
+		fileName,                 //ファイル名
+		GENERIC_WRITE,           //アクセスモード（書き込み用）
+		0,                      //共有（なし）
+		NULL,                   //セキュリティ属性（継承しない）
+		CREATE_ALWAYS,           //作成方法
+		FILE_ATTRIBUTE_NORMAL,  //属性とフラグ（設定なし）
+		NULL); //拡張属性（なし）
+
+	//ファイル書き込み
+	DWORD dwBytes = 0;  //書き込み位置
+	WriteFile(
+		hFile,                   //ファイルハンドル
+		"ABCDEFGH",                  //保存するデータ（文字列）
+		(DWORD)8,   //書き込む文字数
+		&dwBytes,                //書き込んだサイズを入れる変数
+		NULL);                   //オーバーラップド構造体（今回は使わない）
+
+	//ファイルを閉じる
+	CloseHandle(hFile);
+}
+
+void Stage::Open()
+{
+	HANDLE hFile;        //ファイルのハンドル
+	hFile = CreateFile(
+		L"test.tex",                 //ファイル名
+		GENERIC_READ,           //アクセスモード（書き込み用）
+		0,                      //共有（なし）
+		NULL,                   //セキュリティ属性（継承しない）
+		OPEN_EXISTING,           //作成方法
+		FILE_ATTRIBUTE_NORMAL,  //属性とフラグ（設定なし）
+		NULL);                  //拡張属性（なし）
+
+	//ファイルからデータを読み込む
+	//ファイルのサイズを取得
+	DWORD fileSize = GetFileSize(hFile, NULL);
+
+	//ファイルのサイズ分メモリを確保
+	char* data;
+	data = new char[fileSize];
+
+	DWORD dwBytes = 0; //読み込み位置
+
+	ReadFile(
+		hFile,     //ファイルハンドル
+		data,      //データを入れる変数
+		fileSize,  //読み込むサイズ
+		&dwBytes,  //読み込んだサイズ
+		NULL);     //オーバーラップド構造体（今回は使わない）
+
+	CloseHandle(hFile);
+}
+
+//ウィンドウプロシージャ（何かあった時によばれる関数）
+//UINT typedef 別名 unsigned 符号なし　int 
+LRESULT Stage::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	switch (msg)
+	{
+	case WM_DESTROY:
+		PostQuitMessage(0);  //プログラム終了
+		return 0;
+	case WM_MOUSEMOVE:
+		Input::SetMousePosition(LOWORD(lParam), HIWORD(lParam));
+		return 0;
+	case WM_COMMAND:
+		switch (LOWORD(wParam))
+		{
+		case ID_MENU_NEW:
+			break;
+		case ID_MENU_OPEN:
+			Open();
+			break;
+		case ID_MENU_SAVE:
+			Save();
+			break;
+		default:
+			break;
+		}
+		return 0;
+	}
+	return DefWindowProc(hWnd, msg, wParam, lParam);
+}
 
 
 //ダイアログプロシージャ
@@ -168,13 +271,6 @@ BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
 			break;
 		case IDC_COMBO3:
 			selectType = SendMessage(GetDlgItem(hDlg, IDC_COMBO3), CB_GETCURSEL, 0, 0);
-			break;
-		case ID_MENU_NEW:
-			break;
-		case ID_MENU_OPEN:
-
-			break;
-		case ID_MENU_SAVE:
 			break;
 		default:
 			break;
