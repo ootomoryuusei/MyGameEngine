@@ -4,6 +4,14 @@
 #include"Camera.h"
 #include"resource.h"
 
+#include<locale>
+#include<codecvt>
+
+//static std::wstring ConvertUTF8ToWstring(const std::string& src)
+//{
+//	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+//	return converter.from_bytes(src);
+//}
 
 Stage::Stage()
 {
@@ -37,7 +45,6 @@ void Stage::Initialize()
 		string path = "Assets\\" + fileName[i] + ".fbx";
 		fbx[i]->Load(path);
 	}
-	
 }
 
 void Stage::Update()
@@ -134,6 +141,30 @@ void Stage::Release()
 
 void Stage::Save()
 {
+	std::string csv;
+	for (int z = 0; z < BOX_Z; z++) {
+		for (int x = 0; x < BOX_X; x++) {
+			if (z > BOX_Z - 1 && x > BOX_X - 1) {
+				csv = csv + std::to_string(table[z][x].height) + "\n";
+			}
+			else {
+				csv = csv + std::to_string(table[z][x].height) + ",";
+			}
+
+		}
+	}
+	for (int z = 0; z < BOX_Z; z++) {
+		for (int x = 0; x < BOX_X; x++) {
+			if (z > BOX_Z - 1 && x > BOX_X - 1) {
+				csv = csv + std::to_string(table[z][x].type) + "\n";
+			}
+			else {
+				csv = csv + std::to_string(table[z][x].type) + ",";
+			}
+		}
+	}
+	//std::wstring wcsv = ConvertUTF8ToWstring(csv);
+
 	//windowsにあらかじめ準備されているダイアログー＞コモンダイアログ
 	WCHAR fileName[MAX_PATH] = L"無題.map";  //ファイル名を入れる変数
 
@@ -170,17 +201,40 @@ void Stage::Save()
 	DWORD dwBytes = 0;  //書き込み位置
 	WriteFile(
 		hFile,                   //ファイルハンドル
-		"ABCDEFGH",                  //保存するデータ（文字列）
-		(DWORD)8,   //書き込む文字数
+		&csv,                  //保存するデータ（文字列）
+		(DWORD)csv.size(),   //書き込む文字数
 		&dwBytes,                //書き込んだサイズを入れる変数
 		NULL);                   //オーバーラップド構造体（今回は使わない）
 
 	//ファイルを閉じる
 	CloseHandle(hFile);
+
 }
 
 void Stage::Open()
 {
+	//windowsにあらかじめ準備されているダイアログー＞コモンダイアログ
+	WCHAR fileName[MAX_PATH] = L"無題.map";  //ファイル名を入れる変数
+
+	//「ファイルを保存」ダイアログの設定
+	OPENFILENAME ofn;                         	//名前をつけて保存ダイアログの設定用構造体
+	ZeroMemory(&ofn, sizeof(ofn));            	//構造体初期化
+	ofn.lStructSize = sizeof(OPENFILENAME);   	//構造体のサイズ
+	ofn.lpstrFilter = TEXT("マップデータ(*.map)\0*.map\0")        //─┬ファイルの種類
+		TEXT("テキストデータ(*.txt)\0*.txt\0")      //-|
+		TEXT("すべてのファイル(*.*)\0*.*\0\0");     //─┘
+	ofn.lpstrFile = fileName;               	//ファイル名
+	ofn.nMaxFile = MAX_PATH;               	//パスの最大文字数
+	ofn.Flags = OFN_FILEMUSTEXIST;   		//フラグ（同名ファイルが存在したら上書き確認）
+	ofn.lpstrDefExt = L"map";                  	//デフォルト拡張子
+
+	//「ファイルを保存」ダイアログ
+	BOOL selFile;
+	selFile = GetOpenFileName(&ofn);
+
+	//キャンセルしたら中断
+	if (selFile == FALSE) return;
+
 	HANDLE hFile;        //ファイルのハンドル
 	hFile = CreateFile(
 		L"test.tex",                 //ファイル名
