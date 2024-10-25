@@ -36,6 +36,7 @@ public:
 		SetPosition(XMFLOAT3(x, y, z));
 	}
 
+	
 	XMFLOAT3 GetPosition() {
 		return transform_.position_;
 	}

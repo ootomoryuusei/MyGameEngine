@@ -44,9 +44,9 @@ void ChildOden::Update()
 	if (d <= r1 + r2) {
 		KillMe();
 	}*/
-	/*if (transform_.position_.z > 50) {
+	if (transform_.position_.z > 50) {
 		KillMe();
-	}*/
+	}
 }
 
 void ChildOden::Draw()
