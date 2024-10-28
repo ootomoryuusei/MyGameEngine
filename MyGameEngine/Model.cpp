@@ -7,6 +7,9 @@ namespace Model
 
 int Model::Load(std::string filename) {
 	ModelData* pData = new ModelData();
+	pData->filename_ = filename;
+	pData->pFbx_ = nullptr;
+
 	for (auto& e : modelList) {
 		if (e->filename_ == filename) {
 			pData->pFbx_ = e->pFbx_;

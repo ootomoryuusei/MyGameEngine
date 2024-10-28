@@ -1,13 +1,14 @@
 #pragma once
 #include"Engine/GameObject.h"
-class TestScene : public GameObject
+class Enemy :
+    public GameObject
 {
 public:
 	//コンストラクタ
-	TestScene(GameObject* parent);
+	Enemy(GameObject* parent);
 
 	//デストラクタ
-	~TestScene();
+	~Enemy();
 
 	//初期化
 	void Initialize() override;
@@ -20,6 +21,9 @@ public:
 
 	//解放
 	void Release() override;
+
+	XMFLOAT3 GetPosition() { return(transform_.position_); }
 private:
+	int hModel;
 };
 

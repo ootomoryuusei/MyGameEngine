@@ -1,14 +1,13 @@
 #pragma once
-#include"Engine/GameObject.h"
+#include "Engine//GameObject.h"
 
-enum SCENE_ID
-{
+enum SCENE_ID {
 	SCENE_ID_TEST = 0,
 	SCENE_ID_PLAY,
 	SCENE_ID_MAX
 };
-class SceneManager
-	:public GameObject
+class SceneManager :
+    public GameObject
 {
 private:
 	SCENE_ID currentSceneID_;
@@ -18,7 +17,7 @@ public:
 	//コンストラクタ
 	SceneManager(GameObject* parent);
 
-	//デストラクタ
+	//デストラクタH
 	~SceneManager();
 
 	void ChangeScene(SCENE_ID nextScene) {
@@ -35,5 +34,7 @@ public:
 
 	//解放
 	void Release() override;
+
+private:
 };
 

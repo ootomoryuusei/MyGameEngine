@@ -21,6 +21,8 @@ namespace Direct3D
 {
 	extern ID3D11Device* pDevice;
 	extern ID3D11DeviceContext* pContext;
+	extern const int WINDOW_WIDTH;
+	extern const int WINDOW_HEIGHT;
 
 	//èâä˙âª
 	HRESULT Initialize(int winW, int winH, HWND hWnd);

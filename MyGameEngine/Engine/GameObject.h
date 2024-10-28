@@ -2,6 +2,9 @@
 #include<string>
 #include<list>
 #include"Transform.h"
+
+class SphereCollider;
+
 class GameObject
 {
 protected:
@@ -9,7 +12,7 @@ protected:
 	Transform	transform_;
 	GameObject*	pParent_;
 	std::string	objectName_;
-
+	SphereCollider* pCollider_;
 public:
 	GameObject();
 	GameObject(GameObject* parent, const std::string& name);
@@ -33,6 +36,11 @@ public:
 		SetPosition(XMFLOAT3(x, y, z));
 	}
 
+	
+	XMFLOAT3 GetPosition() {
+		return transform_.position_;
+	}
+
 	void SetScale(float sx, float sy, float sz) { transform_.scale_ = { sx,sy,sz }; }
 	void SetRotateX(float xrotate) { transform_.rotate_.x = xrotate; }
 	void SetRotateY(float yrotate) { transform_.rotate_.y = yrotate; }
@@ -41,17 +49,28 @@ public:
 	GameObject* FindChildObject(std::string _objName);
 	GameObject* GetRootJob();
 	GameObject* FindObject(std::string _objName);
+	void AddCollider(SphereCollider* pCollider);
+	void Collision(GameObject* pTarget);
+	void RoundRobin(GameObject* pTarget);
+	virtual void OnCollision(GameObject* pTarget) {};
 
-	//template <typename T> ‚Æ“¯‚¶
+	//template <typename T> ‚Æ“¯‚¶;
 	template <class T>
-	T* Instantiate(GameObject* pParent) {
+	/*T* Instantiate(GameObject* pParent) {
 		T* pTmp = new T(pParent);
 		if (pTmp != nullptr) {
 			pTmp->Initialize();
 			childList_.push_back(pTmp);
 		}
 		return pTmp;
+	}*/
+	GameObject* Instantiate(GameObject* pParent) {
+		T* pTmp = new T(pParent);
+		pTmp->Initialize();
+		childList_.push_back(pTmp);
+		return pTmp;
 	}
+
 private:
 	bool isDead_;
 };
