@@ -86,5 +86,5 @@ GameObject* GameObject::FindObject(std::string _objName)
 {
 	GameObject* rootJob = GetRootJob();
 	GameObject* res = rootJob->FindChildObject(_objName);
-	return (res);
+ 	return (res);
 }

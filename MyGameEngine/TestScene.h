@@ -20,5 +20,7 @@ public:
 
 	//‰ð•ú
 	void Release() override;
+private:
+	int hPict;
 };
 

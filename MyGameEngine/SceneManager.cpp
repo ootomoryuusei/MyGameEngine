@@ -27,13 +27,17 @@ void SceneManager::Update()
     {
         //そのシーンのオブジェクトを全削除
         /*KillAllChildren();*/
-
-        for (auto itr : childList_) {
+      /*  for (auto itr : childList_) {
             itr->ReleaseSub();
             SAFE_DELETE(itr);
             childList_.clear();
         }
-        Model::Release();
+        Model::Release();*/
+
+        auto scene = childList_.begin();
+        (*scene)->ReleaseSub();
+        SAFE_DELETE(*scene);
+        childList_.clear();
 
         //ロードしたデータを全削除
        /* Model::AllRelease();
