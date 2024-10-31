@@ -1,6 +1,8 @@
 #pragma once
 #include"FBX.h"
 
+class CsvReader;
+
 const int BOXTYPE = 5;
 const int BOX_Z = 10;
 const int BOX_X = 10;
@@ -42,8 +44,11 @@ private:
     FBX* fbx[BOXTYPE];
     Data table[BOX_Z][BOX_X];
 
+    CsvReader* csv;
+
     int selectMode = 0;
     int selectType = 0;
+
 
     void Save();
 

@@ -3,15 +3,8 @@
 #include"Input.h"
 #include"Camera.h"
 #include"resource.h"
-
-#include<locale>
-#include<codecvt>
-
-//static std::wstring ConvertUTF8ToWstring(const std::string& src)
-//{
-//	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-//	return converter.from_bytes(src);
-//}
+#include"CsvReader.h"
+#include<string>
 
 Stage::Stage()
 {
@@ -142,20 +135,22 @@ void Stage::Release()
 void Stage::Save()
 {
 	std::string csv;
+	//高さのデータ
 	for (int z = 0; z < BOX_Z; z++) {
 		for (int x = 0; x < BOX_X; x++) {
-			if (z > BOX_Z - 1 && x > BOX_X - 1) {
-				csv = csv + std::to_string(table[z][x].height) + "\n";
+			if (z == BOX_Z - 1 && x == BOX_X - 1) {
+				csv += std::to_string(table[z][x].height) + "\n";
 			}
 			else {
-				csv = csv + std::to_string(table[z][x].height) + ",";
+				csv += std::to_string(table[z][x].height) + ",";
 			}
 
 		}
 	}
+	//種類のデータ
 	for (int z = 0; z < BOX_Z; z++) {
 		for (int x = 0; x < BOX_X; x++) {
-			if (z > BOX_Z - 1 && x > BOX_X - 1) {
+			if (z == BOX_Z - 1 && x == BOX_X - 1) {
 				csv = csv + std::to_string(table[z][x].type) + "\n";
 			}
 			else {
@@ -163,7 +158,6 @@ void Stage::Save()
 			}
 		}
 	}
-	//std::wstring wcsv = ConvertUTF8ToWstring(csv);
 
 	//windowsにあらかじめ準備されているダイアログー＞コモンダイアログ
 	WCHAR fileName[MAX_PATH] = L"無題.map";  //ファイル名を入れる変数
@@ -201,7 +195,7 @@ void Stage::Save()
 	DWORD dwBytes = 0;  //書き込み位置
 	WriteFile(
 		hFile,                   //ファイルハンドル
-		&csv,                  //保存するデータ（文字列）
+	    csv.c_str(),                  //保存するデータ（文字列）
 		(DWORD)csv.size(),   //書き込む文字数
 		&dwBytes,                //書き込んだサイズを入れる変数
 		NULL);                   //オーバーラップド構造体（今回は使わない）
@@ -237,7 +231,7 @@ void Stage::Open()
 
 	HANDLE hFile;        //ファイルのハンドル
 	hFile = CreateFile(
-		L"test.tex",                 //ファイル名
+		L"MapData.txt",                 //ファイル名
 		GENERIC_READ,           //アクセスモード（書き込み用）
 		0,                      //共有（なし）
 		NULL,                   //セキュリティ属性（継承しない）
@@ -261,6 +255,15 @@ void Stage::Open()
 		fileSize,  //読み込むサイズ
 		&dwBytes,  //読み込んだサイズ
 		NULL);     //オーバーラップド構造体（今回は使わない）
+	
+	csv = new CsvReader("MapData.txt");
+
+	for (int z = 0; z < BOX_Z; z++) {
+		for (int x = 0; x < BOX_X; x++) {
+			table[z][x].height = csv->GetInt(0,x);
+			table[z][x].type = csv->GetInt(1,x);
+		}
+	}
 
 	CloseHandle(hFile);
 }

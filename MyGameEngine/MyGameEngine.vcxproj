@@ -152,6 +152,7 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Controller.cpp" />
+    <ClCompile Include="CsvReader.cpp" />
     <ClCompile Include="Direct3D.cpp" />
     <ClCompile Include="FBX.cpp" />
     <ClCompile Include="Quad.cpp" />
@@ -165,6 +166,7 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Controller.h" />
+    <ClInclude Include="CsvReader.h" />
     <ClInclude Include="Direct3D.h" />
     <ClInclude Include="FBX.h" />
     <ClInclude Include="Quad.h" />
