@@ -6,6 +6,22 @@
 #include"CsvReader.h"
 #include<string>
 
+std::string WCHARToString(const WCHAR* wideStr) {
+	// 必要なバイトサイズを取得
+	int size = WideCharToMultiByte(CP_UTF8, 0, wideStr, -1, nullptr, 0, nullptr, nullptr);
+	if (size <= 0) {
+		// エラー処理
+		return "";
+	}
+
+	// 変換用のバッファを作成
+	std::string str(size, '\0');
+
+	// 実際の変換
+	WideCharToMultiByte(CP_UTF8, 0, wideStr, -1, &str[0], size, nullptr, nullptr);
+
+	return str;
+}
 Stage::Stage()
 {
 	for (int i = 0; i < BOXTYPE; i++) {
@@ -38,6 +54,8 @@ void Stage::Initialize()
 		string path = "Assets\\" + fileName[i] + ".fbx";
 		fbx[i]->Load(path);
 	}
+
+	
 }
 
 void Stage::Update()
@@ -231,7 +249,7 @@ void Stage::Open()
 
 	HANDLE hFile;        //ファイルのハンドル
 	hFile = CreateFile(
-		L"MapData.txt",                 //ファイル名
+		fileName,                 //ファイル名
 		GENERIC_READ,           //アクセスモード（書き込み用）
 		0,                      //共有（なし）
 		NULL,                   //セキュリティ属性（継承しない）
@@ -256,12 +274,21 @@ void Stage::Open()
 		&dwBytes,  //読み込んだサイズ
 		NULL);     //オーバーラップド構造体（今回は使わない）
 	
-	csv = new CsvReader("MapData.txt");
+	
+
+	std::string csv_file_path;
+	/*csv_file_path = WCHARToString(fileName);*/
+	/*CsvReader* csv = new CsvReader(csv_file_path);*/
+
+	csv = new CsvReader("Assets\\MapData.txt");
+	
+	int nowX = 0;
 
 	for (int z = 0; z < BOX_Z; z++) {
 		for (int x = 0; x < BOX_X; x++) {
-			table[z][x].height = csv->GetInt(0,x);
-			table[z][x].type = csv->GetInt(1,x);
+			table[z][x].height = csv->GetInt(0,nowX);
+			table[z][x].type = csv->GetInt(1,nowX);
+			nowX++;
 		}
 	}
 
