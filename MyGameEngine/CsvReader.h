@@ -4,15 +4,15 @@
 
 class CsvReader {
 public:
+	CsvReader();
 	CsvReader(std::string filename);
 	~CsvReader();
-	//c
-	int GetLines();	
-	//‰¡
-	int GetColumns(int line);	
-	std::string GetString(int line, int column);
-	int GetInt(int line, int column);
-	float GetFloat(int line, int column);
+	bool Load(std::string filename);
+	int GetHeight();
+	int GetWidth(int line);
+	std::string GetString(int column, int line);
+	int GetInt(int column, int line);
+	float GetFloat(int column, int line);
 private:
 	struct LINEREC {
 		std::vector<std::string> record;

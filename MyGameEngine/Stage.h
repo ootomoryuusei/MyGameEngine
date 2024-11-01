@@ -26,7 +26,7 @@ public:
     //ŠJ•ú
     void Release();
 
-   
+    
 
     LRESULT WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -49,5 +49,6 @@ private:
     void Save();
 
     void Open();
+
 };
 

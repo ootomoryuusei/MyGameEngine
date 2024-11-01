@@ -7,22 +7,7 @@
 #include<string>
 #include<vector>
 
-std::string WCHARToString(const WCHAR* wideStr) {
-	// 必要なバイトサイズを取得
-	int size = WideCharToMultiByte(CP_UTF8, 0, wideStr, -1, nullptr, 0, nullptr, nullptr);
-	if (size <= 0) {
-		// エラー処理
-		return "";
-	}
 
-	// 変換用のバッファを作成
-	std::string str(size, '\0');
-
-	// 実際の変換
-	WideCharToMultiByte(CP_UTF8, 0, wideStr, -1, &str[0], size, nullptr, nullptr);
-
-	return str;
-}
 Stage::Stage()
 {
 	for (int i = 0; i < BOXTYPE; i++) {
@@ -55,8 +40,6 @@ void Stage::Initialize()
 		string path = "Assets\\" + fileName[i] + ".fbx";
 		fbx[i]->Load(path);
 	}
-
-	
 }
 
 void Stage::Update()
@@ -151,6 +134,8 @@ void Stage::Release()
 	}
 }
 
+
+
 void Stage::Save()
 {
 	std::string csv;
@@ -170,7 +155,7 @@ void Stage::Save()
 	for (int z = 0; z < BOX_Z; z++) {
 		for (int x = 0; x < BOX_X; x++) {
 			if (z == BOX_Z - 1 && x == BOX_X - 1) {
-				csv = csv + std::to_string(table[z][x].type) + "\n";
+				csv = csv + std::to_string(table[z][x].type) + "";
 			}
 			else {
 				csv = csv + std::to_string(table[z][x].type) + ",";
@@ -226,7 +211,7 @@ void Stage::Save()
 
 void Stage::Open()
 {
-	//windowsにあらかじめ準備されているダイアログー＞コモンダイアログ
+	////windowsにあらかじめ準備されているダイアログー＞コモンダイアログ
 	WCHAR fileName[MAX_PATH] = L"無題.map";  //ファイル名を入れる変数
 
 	//「ファイルを保存」ダイアログの設定
@@ -234,12 +219,13 @@ void Stage::Open()
 	ZeroMemory(&ofn, sizeof(ofn));            	//構造体初期化
 	ofn.lStructSize = sizeof(OPENFILENAME);   	//構造体のサイズ
 	ofn.lpstrFilter = TEXT("マップデータ(*.map)\0*.map\0")        //─┬ファイルの種類
-		TEXT("テキストデータ(*.txt)\0*.txt\0")      //-|
-		TEXT("すべてのファイル(*.*)\0*.*\0\0");     //─┘
+		TEXT("テキストデータ(*.txt)\0*.txt\0")                    //-|
+		TEXT("csvデータ(*.csv)\0*.csv\0")                        //-|
+		TEXT("すべてのファイル(*.*)\0*.*\0\0");                   //─┘
 	ofn.lpstrFile = fileName;               	//ファイル名
 	ofn.nMaxFile = MAX_PATH;               	//パスの最大文字数
 	ofn.Flags = OFN_FILEMUSTEXIST;   		//フラグ（同名ファイルが存在したら上書き確認）
-	ofn.lpstrDefExt = L"map";                  	//デフォルト拡張子
+	ofn.lpstrDefExt = L"csv";                  	//デフォルト拡張子
 
 	//「ファイルを保存」ダイアログ
 	BOOL selFile;
@@ -250,7 +236,7 @@ void Stage::Open()
 
 	HANDLE hFile;        //ファイルのハンドル
 	hFile = CreateFile(
-		fileName,                 //ファイル名
+		L"MapData.txt",                 //ファイル名
 		GENERIC_READ,           //アクセスモード（書き込み用）
 		0,                      //共有（なし）
 		NULL,                   //セキュリティ属性（継承しない）
