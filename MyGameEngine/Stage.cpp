@@ -5,6 +5,7 @@
 #include"resource.h"
 #include"CsvReader.h"
 #include<string>
+#include<vector>
 
 std::string WCHARToString(const WCHAR* wideStr) {
 	// 必要なバイトサイズを取得
@@ -274,24 +275,45 @@ void Stage::Open()
 		&dwBytes,  //読み込んだサイズ
 		NULL);     //オーバーラップド構造体（今回は使わない）
 	
-	
+	string str = data;
+	std::stringstream ss(str.c_str());
+	std::vector<std::string> csv;
+	std::vector<std::string> height;
+	std::vector<std::string> type;
 
-	std::string csv_file_path;
-	/*csv_file_path = WCHARToString(fileName);*/
-	/*CsvReader* csv = new CsvReader(csv_file_path);*/
+	string s1;
+	string s2;
+	string b;
 
-	csv = new CsvReader("Assets\\MapData.txt");
-	
+	while (std::getline(ss, s1, '\n')) {
+		csv.push_back(s1);
+	}
+
+	s1 = csv[0];
+	s2 = csv[1];
+
+	std::stringstream ss1(s1);
+	while (std::getline(ss1, b, ',')) {
+		height.push_back(b);
+
+	}
+
+	b = "";
+
+	std::stringstream ss2(s2);
+	while (std::getline(ss1, b, ',')) {
+		type.push_back(b);
+
+	}
 	int nowX = 0;
 
 	for (int z = 0; z < BOX_Z; z++) {
 		for (int x = 0; x < BOX_X; x++) {
-			table[z][x].height = csv->GetInt(0,nowX);
-			table[z][x].type = csv->GetInt(1,nowX);
+			table[z][x].height = stoi(height[nowX]);
+			table[z][x].type = stoi(type[nowX]);
 			nowX++;
 		}
 	}
-
 	CloseHandle(hFile);
 }
 
