@@ -301,7 +301,7 @@ void Stage::Open()
 	b = "";
 
 	std::stringstream ss2(s2);
-	while (std::getline(ss1, b, ',')) {
+	while (std::getline(ss2, b, ',')) {
 		type.push_back(b);
 
 	}
