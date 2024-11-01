@@ -1,7 +1,8 @@
 #pragma once
 #include"FBX.h"
+#include"CsvReader.h"
 
-class CsvReader;
+//class CsvReader;
 
 const int BOXTYPE = 5;
 const int BOX_Z = 10;
@@ -28,7 +29,7 @@ public:
     //ŠJ•ú
     void Release();
 
-   
+    
 
     LRESULT WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -44,14 +45,18 @@ private:
     FBX* fbx[BOXTYPE];
     Data table[BOX_Z][BOX_X];
 
-    CsvReader* csv;
-
     int selectMode = 0;
     int selectType = 0;
 
+    std::string MapDataFileName;
+
+    CsvReader csv;
 
     void Save();
 
     void Open();
+
+    void NewMapDataInsert();
+
 };
 

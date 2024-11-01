@@ -3,8 +3,9 @@
 #include"Input.h"
 #include"Camera.h"
 #include"resource.h"
-#include"CsvReader.h"
+//#include"CsvReader.h"
 #include<string>
+#include<fstream>
 
 std::string WCHARToString(const WCHAR* wideStr) {
 	// 必要なバイトサイズを取得
@@ -55,7 +56,7 @@ void Stage::Initialize()
 		fbx[i]->Load(path);
 	}
 
-	
+	//csv = new CsvReader();
 }
 
 void Stage::Update()
@@ -150,6 +151,8 @@ void Stage::Release()
 	}
 }
 
+
+
 void Stage::Save()
 {
 	std::string csv;
@@ -233,12 +236,13 @@ void Stage::Open()
 	ZeroMemory(&ofn, sizeof(ofn));            	//構造体初期化
 	ofn.lStructSize = sizeof(OPENFILENAME);   	//構造体のサイズ
 	ofn.lpstrFilter = TEXT("マップデータ(*.map)\0*.map\0")        //─┬ファイルの種類
-		TEXT("テキストデータ(*.txt)\0*.txt\0")      //-|
-		TEXT("すべてのファイル(*.*)\0*.*\0\0");     //─┘
+		TEXT("テキストデータ(*.txt)\0*.txt\0")                    //-|
+		TEXT("csvデータ(*.txt)\0*.csv\0")                        //-|
+		TEXT("すべてのファイル(*.*)\0*.*\0\0");                   //─┘
 	ofn.lpstrFile = fileName;               	//ファイル名
 	ofn.nMaxFile = MAX_PATH;               	//パスの最大文字数
 	ofn.Flags = OFN_FILEMUSTEXIST;   		//フラグ（同名ファイルが存在したら上書き確認）
-	ofn.lpstrDefExt = L"map";                  	//デフォルト拡張子
+	ofn.lpstrDefExt = L"csv";                  	//デフォルト拡張子
 
 	//「ファイルを保存」ダイアログ
 	BOOL selFile;
@@ -247,52 +251,69 @@ void Stage::Open()
 	//キャンセルしたら中断
 	if (selFile == FALSE) return;
 
-	HANDLE hFile;        //ファイルのハンドル
-	hFile = CreateFile(
-		fileName,                 //ファイル名
-		GENERIC_READ,           //アクセスモード（書き込み用）
-		0,                      //共有（なし）
-		NULL,                   //セキュリティ属性（継承しない）
-		OPEN_EXISTING,           //作成方法
-		FILE_ATTRIBUTE_NORMAL,  //属性とフラグ（設定なし）
-		NULL);                  //拡張属性（なし）
+	//HANDLE hFile;        //ファイルのハンドル
+	//hFile = CreateFile(
+	//	fileName,                 //ファイル名
+	//	GENERIC_READ,           //アクセスモード（書き込み用）
+	//	0,                      //共有（なし）
+	//	NULL,                   //セキュリティ属性（継承しない）
+	//	OPEN_EXISTING,           //作成方法
+	//	FILE_ATTRIBUTE_NORMAL,  //属性とフラグ（設定なし）
+	//	NULL);                  //拡張属性（なし）
 
 	//ファイルからデータを読み込む
 	//ファイルのサイズを取得
-	DWORD fileSize = GetFileSize(hFile, NULL);
+	//DWORD fileSize = GetFileSize(hFile, NULL);
 
-	//ファイルのサイズ分メモリを確保
-	char* data;
-	data = new char[fileSize];
+	////ファイルのサイズ分メモリを確保
+	//char* data;
+	//data = new char[fileSize];
 
-	DWORD dwBytes = 0; //読み込み位置
+	//DWORD dwBytes = 0; //読み込み位置
 
-	ReadFile(
-		hFile,     //ファイルハンドル
-		data,      //データを入れる変数
-		fileSize,  //読み込むサイズ
-		&dwBytes,  //読み込んだサイズ
-		NULL);     //オーバーラップド構造体（今回は使わない）
-	
-	
+	//ReadFile(
+	//	hFile,     //ファイルハンドル
+	//	data,      //データを入れる変数
+	//	fileSize,  //読み込むサイズ
+	//	&dwBytes,  //読み込んだサイズ
+	//	NULL);     //オーバーラップド構造体（今回は使わない）
 
-	std::string csv_file_path;
-	/*csv_file_path = WCHARToString(fileName);*/
-	/*CsvReader* csv = new CsvReader(csv_file_path);*/
+	/*csv = CsvReader();*/
+	if (!csv.Load("Assets//MapData.csv"))
+	{
+		PostQuitMessage(0);
+	}
 
-	csv = new CsvReader("Assets\\MapData.txt");
-	
 	int nowX = 0;
 
 	for (int z = 0; z < BOX_Z; z++) {
 		for (int x = 0; x < BOX_X; x++) {
-			table[z][x].height = csv->GetInt(0,nowX);
-			table[z][x].type = csv->GetInt(1,nowX);
+			table[z][x].height = csv.GetInt(nowX, 0);
+			table[z][x].type = csv.GetInt(nowX, 1);
 			nowX++;
 		}
 	}
+	
+	//CloseHandle(hFile);
+}
 
-	CloseHandle(hFile);
+void Stage::NewMapDataInsert()
+{
+	/*csv = CsvReader();*/
+	if (!csv.Load("Assets//MapData.csv"))
+	{
+		PostQuitMessage(0);
+	}
+
+	int nowX = 0;
+
+	for (int z = 0; z < BOX_Z; z++) {
+		for (int x = 0; x < BOX_X; x++) {
+			table[z][x].height = csv.GetInt(nowX,0);
+			table[z][x].type = csv.GetInt(nowX,1);
+			nowX++;
+		}
+	}
 }
 
 //ウィンドウプロシージャ（何かあった時によばれる関数）
@@ -314,6 +335,7 @@ LRESULT Stage::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			break;
 		case ID_MENU_OPEN:
 			Open();
+			NewMapDataInsert();
 			break;
 		case ID_MENU_SAVE:
 			Save();

@@ -2,12 +2,21 @@
 #include <fstream>
 #include <assert.h>
 
+CsvReader::CsvReader()
+{
+}
+
 CsvReader::CsvReader(std::string filename)
+{
+	Load(filename);
+}
+
+bool CsvReader::Load(std::string filename)
 {
 	all.clear();
 
 	std::ifstream ifs(filename);
-	if (!ifs) return;
+	if (!ifs) return false;
 
 	// BOM Skip‚·‚é
 	unsigned char BOMS[] = { 0xEF, 0xBB, 0xBF };
@@ -18,8 +27,9 @@ CsvReader::CsvReader(std::string filename)
 			break;
 		}
 	}
-	if (!found)
+	if (!found) {
 		ifs.seekg(std::ios_base::beg);
+	}
 
 	// ƒf[ƒ^‚ğ“Ç‚Ş
 	std::string lineStr;
@@ -60,6 +70,7 @@ CsvReader::CsvReader(std::string filename)
 		all.emplace_back(lineRecord);
 	}
 	ifs.close();
+	return true;
 }
 
 CsvReader::~CsvReader()
@@ -69,33 +80,37 @@ CsvReader::~CsvReader()
 	all.clear();
 }
 
-int CsvReader::GetLines()
+int CsvReader::GetHeight()
 {
 	return all.size();
 }
 
-int CsvReader::GetColumns(int line)
+int CsvReader::GetWidth(int line)
 {
-	assert(line < GetLines());
+	assert(line < GetHeight());
 	return all[line].record.size();
 }
 
-std::string CsvReader::GetString(int line, int column)
+std::string CsvReader::GetString(int column, int line)
 {
-	assert(line < GetLines());
-	if (column >= GetColumns(line))
+	assert(line < GetHeight());
+	if (column >= GetWidth(line))
 		return "";
 	return all[line].record[column];
 }
 
-int CsvReader::GetInt(int line, int column)
+int CsvReader::GetInt(int column, int line)
 {
-	std::string str = GetString(line, column);
+	std::string str = GetString(column, line);
+	if (str == "")
+		return 0;
 	return std::stoi(str);
 }
 
-float CsvReader::GetFloat(int line, int column)
+float CsvReader::GetFloat(int column, int line)
 {
-	std::string str = GetString(line, column);
+	std::string str = GetString(column, line);
+	if (str == "")
+		return 0.0f;
 	return std::stof(str);
 }
