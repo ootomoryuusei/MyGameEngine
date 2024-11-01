@@ -236,7 +236,7 @@ void Stage::Open()
 
 	HANDLE hFile;        //ファイルのハンドル
 	hFile = CreateFile(
-		fileName,                 //ファイル名
+		L"MapData.txt",                 //ファイル名
 		GENERIC_READ,           //アクセスモード（書き込み用）
 		0,                      //共有（なし）
 		NULL,                   //セキュリティ属性（継承しない）
@@ -296,8 +296,8 @@ void Stage::Open()
 
 	for (int z = 0; z < BOX_Z; z++) {
 		for (int x = 0; x < BOX_X; x++) {
-			table[z][x].height = stoi(height[nowX]);
-			table[z][x].type = stoi(type[nowX]);
+			table[z][x].height = csv->GetInt(0,nowX);
+			table[z][x].type = csv->GetInt(1,nowX);
 			nowX++;
 		}
 	}
