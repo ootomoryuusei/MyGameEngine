@@ -3,26 +3,11 @@
 #include"Input.h"
 #include"Camera.h"
 #include"resource.h"
-//#include"CsvReader.h"
+#include"CsvReader.h"
 #include<string>
 #include<fstream>
 
-std::string WCHARToString(const WCHAR* wideStr) {
-	// 必要なバイトサイズを取得
-	int size = WideCharToMultiByte(CP_UTF8, 0, wideStr, -1, nullptr, 0, nullptr, nullptr);
-	if (size <= 0) {
-		// エラー処理
-		return "";
-	}
 
-	// 変換用のバッファを作成
-	std::string str(size, '\0');
-
-	// 実際の変換
-	WideCharToMultiByte(CP_UTF8, 0, wideStr, -1, &str[0], size, nullptr, nullptr);
-
-	return str;
-}
 Stage::Stage()
 {
 	for (int i = 0; i < BOXTYPE; i++) {
@@ -55,8 +40,6 @@ void Stage::Initialize()
 		string path = "Assets\\" + fileName[i] + ".fbx";
 		fbx[i]->Load(path);
 	}
-
-	//csv = new CsvReader();
 }
 
 void Stage::Update()
@@ -172,7 +155,7 @@ void Stage::Save()
 	for (int z = 0; z < BOX_Z; z++) {
 		for (int x = 0; x < BOX_X; x++) {
 			if (z == BOX_Z - 1 && x == BOX_X - 1) {
-				csv = csv + std::to_string(table[z][x].type) + "\n";
+				csv = csv + std::to_string(table[z][x].type) + "";
 			}
 			else {
 				csv = csv + std::to_string(table[z][x].type) + ",";
@@ -228,7 +211,7 @@ void Stage::Save()
 
 void Stage::Open()
 {
-	//windowsにあらかじめ準備されているダイアログー＞コモンダイアログ
+	////windowsにあらかじめ準備されているダイアログー＞コモンダイアログ
 	WCHAR fileName[MAX_PATH] = L"無題.map";  //ファイル名を入れる変数
 
 	//「ファイルを保存」ダイアログの設定
@@ -237,7 +220,7 @@ void Stage::Open()
 	ofn.lStructSize = sizeof(OPENFILENAME);   	//構造体のサイズ
 	ofn.lpstrFilter = TEXT("マップデータ(*.map)\0*.map\0")        //─┬ファイルの種類
 		TEXT("テキストデータ(*.txt)\0*.txt\0")                    //-|
-		TEXT("csvデータ(*.txt)\0*.csv\0")                        //-|
+		TEXT("csvデータ(*.csv)\0*.csv\0")                        //-|
 		TEXT("すべてのファイル(*.*)\0*.*\0\0");                   //─┘
 	ofn.lpstrFile = fileName;               	//ファイル名
 	ofn.nMaxFile = MAX_PATH;               	//パスの最大文字数
@@ -251,69 +234,75 @@ void Stage::Open()
 	//キャンセルしたら中断
 	if (selFile == FALSE) return;
 
-	//HANDLE hFile;        //ファイルのハンドル
-	//hFile = CreateFile(
-	//	fileName,                 //ファイル名
-	//	GENERIC_READ,           //アクセスモード（書き込み用）
-	//	0,                      //共有（なし）
-	//	NULL,                   //セキュリティ属性（継承しない）
-	//	OPEN_EXISTING,           //作成方法
-	//	FILE_ATTRIBUTE_NORMAL,  //属性とフラグ（設定なし）
-	//	NULL);                  //拡張属性（なし）
+	HANDLE hFile;        //ファイルのハンドル
+	hFile = CreateFile(
+		fileName,                 //ファイル名
+		GENERIC_READ,           //アクセスモード（書き込み用）
+		0,                      //共有（なし）
+		NULL,                   //セキュリティ属性（継承しない）
+		OPEN_EXISTING,           //作成方法
+		FILE_ATTRIBUTE_NORMAL,  //属性とフラグ（設定なし）
+		NULL);                  //拡張属性（なし）
 
 	//ファイルからデータを読み込む
 	//ファイルのサイズを取得
-	//DWORD fileSize = GetFileSize(hFile, NULL);
+	DWORD fileSize = GetFileSize(hFile, NULL);
 
-	////ファイルのサイズ分メモリを確保
-	//char* data;
-	//data = new char[fileSize];
+	//ファイルのサイズ分メモリを確保
+	char* data;
+	data = new char[fileSize];
 
-	//DWORD dwBytes = 0; //読み込み位置
+	DWORD dwBytes = 0; //読み込み位置
 
-	//ReadFile(
-	//	hFile,     //ファイルハンドル
-	//	data,      //データを入れる変数
-	//	fileSize,  //読み込むサイズ
-	//	&dwBytes,  //読み込んだサイズ
-	//	NULL);     //オーバーラップド構造体（今回は使わない）
+	ReadFile(
+		hFile,     //ファイルハンドル
+		data,      //データを入れる変数
+		fileSize,  //読み込むサイズ
+		&dwBytes,  //読み込んだサイズ
+		NULL);     //オーバーラップド構造体（今回は使わない）
+	
+	
+	string str = data;
+	std::stringstream ss(str.c_str());
+	std::vector<std::string> csv;
+	std::vector<std::string> height;
+	std::vector<std::string> type;
 
-	/*csv = CsvReader();*/
-	if (!csv.Load("Assets//MapData.csv"))
-	{
-		PostQuitMessage(0);
+	string s1;
+	string s2;
+	string b;
+
+	while (std::getline(ss, s1, '\n')) {
+		csv.push_back(s1);
 	}
 
+	s1 = csv[0];
+	s2 = csv[1];
+
+	std::stringstream ss1(s1);
+	while (std::getline(ss1,b,',')) {
+		height.push_back(b);
+
+	}
+	
+	b = "";
+
+	std::stringstream ss2(s2);
+	while (std::getline(ss1, b, ',')) {
+		type.push_back(b);
+
+	}
 	int nowX = 0;
 
 	for (int z = 0; z < BOX_Z; z++) {
 		for (int x = 0; x < BOX_X; x++) {
-			table[z][x].height = csv.GetInt(nowX, 0);
-			table[z][x].type = csv.GetInt(nowX, 1);
+			table[z][x].height = stoi(height[nowX]);
+			table[z][x].type = stoi(type[nowX]);
 			nowX++;
 		}
 	}
 	
-	//CloseHandle(hFile);
-}
-
-void Stage::NewMapDataInsert()
-{
-	/*csv = CsvReader();*/
-	if (!csv.Load("Assets//MapData.csv"))
-	{
-		PostQuitMessage(0);
-	}
-
-	int nowX = 0;
-
-	for (int z = 0; z < BOX_Z; z++) {
-		for (int x = 0; x < BOX_X; x++) {
-			table[z][x].height = csv.GetInt(nowX,0);
-			table[z][x].type = csv.GetInt(nowX,1);
-			nowX++;
-		}
-	}
+	CloseHandle(hFile);
 }
 
 //ウィンドウプロシージャ（何かあった時によばれる関数）
@@ -335,7 +324,6 @@ LRESULT Stage::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			break;
 		case ID_MENU_OPEN:
 			Open();
-			NewMapDataInsert();
 			break;
 		case ID_MENU_SAVE:
 			Save();

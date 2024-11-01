@@ -1,8 +1,6 @@
 #pragma once
 #include"FBX.h"
-#include"CsvReader.h"
 
-//class CsvReader;
 
 const int BOXTYPE = 5;
 const int BOX_Z = 10;
@@ -48,15 +46,10 @@ private:
     int selectMode = 0;
     int selectType = 0;
 
-    std::string MapDataFileName;
-
-    CsvReader csv;
 
     void Save();
 
     void Open();
-
-    void NewMapDataInsert();
 
 };
 
