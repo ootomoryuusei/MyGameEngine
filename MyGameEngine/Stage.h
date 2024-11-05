@@ -1,7 +1,6 @@
 #pragma once
 #include"FBX.h"
 
-
 const int BOXTYPE = 5;
 const int BOX_Z = 10;
 const int BOX_X = 10;

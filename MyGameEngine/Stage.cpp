@@ -5,7 +5,7 @@
 #include"resource.h"
 #include"CsvReader.h"
 #include<string>
-#include<fstream>
+#include<vector>
 
 
 Stage::Stage()
@@ -261,7 +261,6 @@ void Stage::Open()
 		&dwBytes,  //読み込んだサイズ
 		NULL);     //オーバーラップド構造体（今回は使わない）
 	
-	
 	string str = data;
 	std::stringstream ss(str.c_str());
 	std::vector<std::string> csv;
@@ -280,15 +279,15 @@ void Stage::Open()
 	s2 = csv[1];
 
 	std::stringstream ss1(s1);
-	while (std::getline(ss1,b,',')) {
+	while (std::getline(ss1, b, ',')) {
 		height.push_back(b);
 
 	}
-	
+
 	b = "";
 
 	std::stringstream ss2(s2);
-	while (std::getline(ss1, b, ',')) {
+	while (std::getline(ss2, b, ',')) {
 		type.push_back(b);
 
 	}
@@ -296,11 +295,11 @@ void Stage::Open()
 
 	for (int z = 0; z < BOX_Z; z++) {
 		for (int x = 0; x < BOX_X; x++) {
-			table[z][x].height = csv->GetInt(0,x);
-			table[z][x].type = csv->GetInt(1,x);
+			table[z][x].height = stoi(height[nowX]);
+			table[z][x].type = stoi(type[nowX]);
+			nowX++;
 		}
 	}
-	
 	CloseHandle(hFile);
 }
 
