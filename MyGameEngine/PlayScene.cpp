@@ -1,6 +1,7 @@
 #include "PlayScene.h"
 #include"Player.h"
 #include"Enemy.h"
+#include"SceneManager.h"
 
 
 PlayScene::PlayScene(GameObject* parent) : GameObject(parent,"PlayScene")
@@ -24,7 +25,8 @@ void PlayScene::Update()
 {
 	Enemy* enemy = (Enemy*)FindObject("Enemy");
 	if (enemy == nullptr) {
-		
+ 		SceneManager* pSceneManager = (SceneManager*)FindObject("SceneManager");
+		pSceneManager->ChangeScene(SCENE_ID_CLEAR);
 	}
 }
 
