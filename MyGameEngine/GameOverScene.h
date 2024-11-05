@@ -1,13 +1,14 @@
 #pragma once
-#include"Engine/GameObject.h"
-class TestScene : public GameObject
+#include "Engine/GameObject.h"
+class GameOverScene :
+    public GameObject
 {
 public:
 	//コンストラクタ
-	TestScene(GameObject* parent);
+	GameOverScene(GameObject* parent);
 
 	//デストラクタ
-	~TestScene();
+	~GameOverScene();
 
 	//初期化
 	void Initialize() override;
@@ -21,5 +22,6 @@ public:
 	//解放
 	void Release() override;
 private:
+	int hPict_;
 };
 
