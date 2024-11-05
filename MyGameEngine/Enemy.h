@@ -22,7 +22,9 @@ public:
 	//‰ð•ú
 	void Release() override;
 
+
 	XMFLOAT3 GetPosition() { return(transform_.position_); }
+
 private:
 	int hModel;
 };

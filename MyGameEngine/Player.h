@@ -11,6 +11,7 @@ public:
 	void Update() override;
 	void Draw() override;
 	void Release() override;
+
 private:
 	int hModel;
 };

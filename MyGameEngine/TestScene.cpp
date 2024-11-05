@@ -13,8 +13,6 @@ TestScene::~TestScene()
 
 void TestScene::Initialize()
 {
-	/*hPict = Model::Load("Assets\\bgscreen.png");*/
-	assert(hPict >= 0);
 }
 
 void TestScene::Update()
@@ -27,7 +25,6 @@ void TestScene::Update()
 
 void TestScene::Draw()
 {
-	/*Model::Draw(hPict);*/
 }
 
 void TestScene::Release()

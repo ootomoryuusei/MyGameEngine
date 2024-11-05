@@ -56,20 +56,20 @@ public:
 
 	//template <typename T> ‚Æ“¯‚¶;
 	template <class T>
-	/*T* Instantiate(GameObject* pParent) {
+	T* Instantiate(GameObject* pParent) {
 		T* pTmp = new T(pParent);
 		if (pTmp != nullptr) {
 			pTmp->Initialize();
 			childList_.push_back(pTmp);
 		}
 		return pTmp;
-	}*/
-	GameObject* Instantiate(GameObject* pParent) {
+	}
+	/*GameObject* Instantiate(GameObject* pParent) {
 		T* pTmp = new T(pParent);
 		pTmp->Initialize();
 		childList_.push_back(pTmp);
 		return pTmp;
-	}
+	}*/
 
 private:
 	bool isDead_;
